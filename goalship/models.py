@@ -9,7 +9,6 @@ from datetime import date
 class Profile(models.Model):
     name = models.CharField(max_length= 30)
     user = models.OneToOneField(User, on_delete= models.CASCADE)
-    email = models.EmailField(unique= True)
     age = models.PositiveIntegerField()
     image = models.ImageField(upload_to='profle_image', blank= True)
     gender_choice = (
@@ -18,21 +17,16 @@ class Profile(models.Model):
         ('others', 'Others'),
     )
     gender = models.CharField(max_length= 15, choices=gender_choice, default='others')
+    friends = models.ManyToManyField('self', blank= True, symmetrical=True)
 
     def __str__(self) -> str:
         return self.name
     
-# Model to show friends
-class Friends(models.Model):
-    user = models.ForeignKey(User ,on_delete=models.CASCADE, related_name="friend")
-    friend =models.ForeignKey(User, on_delete=models.CASCADE, related_name="friend_of")
-
 # Model to show Goal details
-
 class Goal(models.Model):
     name = models.CharField(max_length=20)
     user = models.ForeignKey(User, on_delete= models.CASCADE)
-    start_date = models.DateField(default= date.today)
+    start_date = models.DateField(default= date.today, blank= True)
     duration = models.IntegerField(default= 7)
     progress_choice = (
         ('Seconds', 'seconds'),
@@ -52,7 +46,7 @@ class Goal(models.Model):
     
 # Model to show daily progress of each goal   
 class DailyProgress(models.Model):
-    goal = models.ForeignKey(Goal, on_delete=models.CASCADE)
+    goal = models.ForeignKey(Goal,related_name='progess', on_delete=models.CASCADE)
     progress_date = models.DateField()
     progress_amount = models.IntegerField()
 
@@ -69,5 +63,5 @@ class Reward(models.Model):
 
 class UserReward(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    reward = models.ForeignKey(Reward, on_delete= models.CASCADE)
+    reward = models.ForeignKey(Reward, related_name='reward_of',on_delete= models.CASCADE)
     redeemed = models.BooleanField(default=False)

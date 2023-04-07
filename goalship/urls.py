@@ -1,10 +1,12 @@
 from django.urls import path
-from .views import HomePageView, FriendListView, FriendDetail,ProfileSettingsView, RewardView
+from .views import *
 
 
 urlpatterns = [
     path('home/<str:date>/', HomePageView.as_view()),
-    path('social/', FriendListView.as_view()), #Working
-    path('friend_detail/<int:friend_id>/',FriendDetail.as_view()), #Working
-    path('rewards/', RewardView.as_view()),
+    path('social/', UserListView.as_view()), #Working
+    path('friend_detail/<int:friend_id>/',UserDetail.as_view()), #Working
+    path('rewards/', RewardView.as_view()), #Working
+    path('users/login/', UserLoginView.as_view()),
+    path('create_goal/', CreateGoal.as_view())
 ]

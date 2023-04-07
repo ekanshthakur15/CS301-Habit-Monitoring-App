@@ -1,32 +1,54 @@
-from rest_framework.serializers import ModelSerializer
-from .models import Profile, Reward, UserReward, Friends, Goal, DailyProgress
+from rest_framework import serializers
+from .models import *
+from django.contrib.auth.models import User
 
-class ProfileSerializer(ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ("id", "username", 'email', 'password')
+        depth = 1
+
+class FriendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('name', 'age' , 'gender', 'image', 'email')
+        fields = ('id', 'name', 'age', 'gender')
+class ProfileSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only = True)
+    user = UserSerializer()
+    friend = FriendSerializer(many = True, read_only = True)
+    gender = serializers.ChoiceField(choices= Profile.gender_choice)
+    class Meta:
+        model = Profile
+        fields = '__all__'
 
-class RewardSerializer(ModelSerializer):
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        profile = Profile.objects.create(**validated_data)
+        User.objects.create(**user_data)
+        return profile
+        
+class RewardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reward
-        fields = ('name', 'description', 'points_required')
+        fields = ('id','name', 'description', 'points_required')
 
-class FriendSerializer(ModelSerializer):
-    class Meta:
-        model = Friends
-        fields = ('user', 'friend')
-
-class UserRewardSerializer(ModelSerializer):
+class UserRewardSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many = True)
+    reward = RewardSerializer(many = True)
     class Meta:
         model = UserReward
         fields = ('user', 'reward', 'redeemed')
+class DailyProgressSerializer(serializers.ModelSerializer):
+    
 
-class GoalSerializer(ModelSerializer):
-    class Meta:
-        model = Goal
-        fields = ('name', 'start_date', 'end_date', 'user', 'progress', 'pregress_type', 'frequency')
-
-class DailyProgressSerializer(ModelSerializer):
     class Meta:
         model = DailyProgress
-        fields = ('goal','progress_date', 'progress_amount')
+        fields = ('id','goal','progress_date', 'progress_amount','progress_type')
+
+class GoalSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only = True)
+    progress_type = serializers.ChoiceField(choices= Goal.progress_choice)
+    class Meta:
+        model = Goal
+        fields = '__all__'

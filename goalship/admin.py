@@ -1,10 +1,9 @@
 from django.contrib import admin
-from .models import Profile, Goal, DailyProgress, Reward, UserReward, Friends
+from .models import Profile, Goal, DailyProgress, Reward, UserReward
 
 # Register your models here.
 
 admin.site.register(Profile)
-admin.site.register(Friends)
 admin.site.register(Goal)
 admin.site.register(DailyProgress)
 admin.site.register(Reward)

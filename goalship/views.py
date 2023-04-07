@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .serializers import GoalSerializer,FriendSerializer,RewardSerializer,ProfileSerializer,UserRewardSerializer,DailyProgressSerializer
-from .models import Goal, Profile, DailyProgress, Reward, UserReward, Friends
+from .models import Goal, Profile, DailyProgress, Reward, UserReward
 from django.contrib.auth.models import User
 
 from rest_framework import status, generics
@@ -9,6 +9,11 @@ from rest_framework.response import Response
 from django.db.models import Count
 from datetime import datetime, date
 from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from .permissions import IsFriend
 
 
 # Create your views here.
@@ -21,7 +26,7 @@ class CreateGoal(APIView):
     def post(self, request, format = None):
         serializer = GoalSerializer(data= request.data)
         if serializer.is_valid():
-            goal = serializer.save(user = request.user)
+            goal = serializer.save(user=request.user, start_date=date.today())
             daily_progress = DailyProgress(goal = goal, progress_date = date.today(), progress_amount = 0)
             daily_progress.save()
             return Response(serializer.data, status= status.HTTP_201_CREATED)
@@ -78,20 +83,25 @@ class UserRewardView(APIView):
         return Response(serializer.data)
     
 
-# View to show the list of friends
+# View to show the list of friends and to create user 
 
-class FriendListView(generics.ListAPIView):
+class UserListView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request,format = None):
+        serializer = ProfileSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(status= status.HTTP_400_BAD_REQUEST)
 
-    queryset = Friends.objects.all()
-    serializer_class = FriendSerializer
-
-    def get(self, request, *args, **kwargs):
-        friends = self.get_queryset()
+    def get(self, request):
+        user = request.user
+        friends = user.profile.friends.all()
         data = []
         for friend in friends:
             user = friend.user
             user_rewards = UserReward.objects.filter(user = user)
-            rewards_count = user_rewards.aggregate(total = Count('id'))['total']
+            rewards_count = user_rewards.count()
             friend_data = {
                 'name' : user.profile.name,
                 'profile_picture' : request.build_absolute_uri(user.profile.image.url),
@@ -102,15 +112,17 @@ class FriendListView(generics.ListAPIView):
     
 # View to display info about a friend and remove them
 
-class FriendDetail(APIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = FriendSerializer
+class UserDetail(APIView):
+    permission_classes = [IsFriend, IsAuthenticated]
+
+    def get_object(self, id):
+        try:
+            return User.objects.get(id=id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def get(self, request,friend_id):
-        try:
-            friend = User.objects.get(id = friend_id)
-        except User.DoesNotExist:
-            return Response(status = status.HTTP_404_NOT_FOUND)
+        friend = self.get_object(friend_id)
         friend_profile = Profile.objects.get(user = friend)
         friend_rewards = UserReward.objects.filter(user = friend)
 
@@ -128,17 +140,12 @@ class FriendDetail(APIView):
         return Response(data)
         
     def delete(self, request, friend_id):
-        try:
-            friend = User.objects.get(id=friend_id)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        print("Deleting the friend", friend_id)
-        friendobj = Friends.objects.filter(user= request.user, friend = friend)
-        if not friendobj.exists():
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        print('Friend object:', friend)
-        friendobj.delete()
-        return Response(status= status.HTTP_204_NO_CONTENT)
+        friend = self.get_object(friend_id).profile
+
+        user = request.user
+        user.profile.friends.remove(friend)
+        return Response(status = status.HTTP_204_NO_CONTENT)
+
     
 #View to display the information about the goals of the friends
 
@@ -166,3 +173,16 @@ class HomePageView(APIView):
                 friends_data['goals'].append(goal_data)
             friends_goal.append(friends_data)
         return Response(friends_goal, status= status.HTTP_200_OK)
+    
+
+class UserLoginView(APIView):
+    @csrf_exempt
+    def post(self, request, format = None):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(request, username = username, password = password)
+
+        if user is not None:
+            token, created = Token.objects.get_or_create(user = user)
+            return Response({'token': token.key})
+        return Response(status= status.HTTP_400_BAD_REQUEST)
