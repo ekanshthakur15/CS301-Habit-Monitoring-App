@@ -154,8 +154,12 @@ class UserDetail(APIView):
         user = request.user
         user.profile.friends.remove(friend)
         return Response(status = status.HTTP_204_NO_CONTENT)
-
-    
+        
+    def post(self, request, friend_id):
+        friend = self.get_object(friend_id).profile
+        user = request.user
+        user.profile.friends.add(friend)
+        return Response(status=status.HTTP_201_CREATED)
 #View to display the information about the goals of the friends
 
 class HomePageView(APIView):
