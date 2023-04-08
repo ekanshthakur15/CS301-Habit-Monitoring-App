@@ -13,7 +13,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
-from .permissions import IsFriend
+from django.shortcuts import get_object_or_404
+#from .permissions import IsFriend
 
 
 # Create your views here.
@@ -33,24 +34,32 @@ class CreateGoal(APIView):
         return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
 
 #View to retirieve user info on profile settings page
-class ProfileSettingsView(APIView):
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
     
     #function to get the user info
     def get(self, request, format = None):
         user = request.user
         try:
-            profile = user.profile
+            profile = Profile.objects.get(user = user)
         except Profile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
+        data = {
+            'name': profile.name,
+            'age':profile.age,
+            'gender' : profile.gender,
+            'profile_picture': request.build_absolute_uri(profile.image),
+            'email' : profile.user.email
+        }
+        return Response(data)
     
     # function to edit the user info
-    def put(self, request):
+    def put(self, request,*args, **kwargs):
         user = request.user
-        profile = Profile.objects.filter(user)
-        serializer = ProfileSerializer(profile, data= request.data)
+        profile = get_object_or_404(Profile, user = user)
+        serializer = ProfileSerializer(instance = profile, data= request.data, partial = True)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -113,7 +122,7 @@ class UserListView(APIView):
 # View to display info about a friend and remove them
 
 class UserDetail(APIView):
-    permission_classes = [IsFriend, IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self, id):
         try:

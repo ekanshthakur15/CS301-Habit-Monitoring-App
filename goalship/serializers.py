@@ -27,6 +27,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         profile = Profile.objects.create(**validated_data)
         User.objects.create(**user_data)
         return profile
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.age = validated_data.get('age', instance.age)
+        instance.gender = validated_data.get('gender', instance.gender)
+        instance.image = validated_data.get('image', instance.image)
+        instance.save()
+        return instance
         
 class RewardSerializer(serializers.ModelSerializer):
     class Meta:
