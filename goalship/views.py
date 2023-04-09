@@ -2,8 +2,8 @@ from django.shortcuts import render
 from .serializers import GoalSerializer,FriendSerializer,RewardSerializer,ProfileSerializer,UserRewardSerializer,DailyProgressSerializer
 from .models import Goal, Profile, DailyProgress, Reward, UserReward
 from django.contrib.auth.models import User
-
-from rest_framework import status, generics
+from django.utils import timezone
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Count
@@ -12,7 +12,6 @@ from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
 from django.shortcuts import get_object_or_404
 #from .permissions import IsFriend
 
@@ -20,7 +19,7 @@ from django.shortcuts import get_object_or_404
 # Create your views here.
 
 
-#View to create a new goal and save it
+#Working View to create a new goal and save it
 
 class CreateGoal(APIView):
 
@@ -33,7 +32,7 @@ class CreateGoal(APIView):
             return Response(serializer.data, status= status.HTTP_201_CREATED)
         return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
 
-#View to retirieve user info on profile settings page
+# Working View to retirieve user info on profile settings page
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -92,7 +91,7 @@ class UserRewardView(APIView):
         return Response(serializer.data)
     
 
-# View to show the list of friends and to create user 
+# Working View to show the list of friends and to create user 
 
 class UserListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -119,7 +118,7 @@ class UserListView(APIView):
             data.append(friend_data)
         return Response(data)
     
-# View to display info about a friend and remove them
+# Working View to display info about a friend and remove them
 
 class UserDetail(APIView):
     permission_classes = [IsAuthenticated]
@@ -188,6 +187,7 @@ class HomePageView(APIView):
         return Response(friends_goal, status= status.HTTP_200_OK)
     
 
+#Working view for login
 class UserLoginView(APIView):
     @csrf_exempt
     def post(self, request, format = None):
@@ -199,3 +199,18 @@ class UserLoginView(APIView):
             token, created = Token.objects.get_or_create(user = user)
             return Response({'token': token.key})
         return Response(status= status.HTTP_400_BAD_REQUEST)
+    
+
+# View to create a dailyprogress object for every goal daily
+
+def create_daily_progress():
+        goals = Goal.objects.all()
+
+        for goal in goals:
+            daily_progress_exists = DailyProgress.objects.filter(
+                goal = goal,
+                progress_date = timezone.now().today()
+            ).exists()
+            if not daily_progress_exists:
+                DailyProgress.objects.create(goal = goal, progress_date = timezone.now().today(), progress_amount = 0)
+        return Response(status= status.HTTP_201_CREATED)

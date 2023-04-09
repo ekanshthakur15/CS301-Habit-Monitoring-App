@@ -9,5 +9,6 @@ urlpatterns = [
     path('rewards/', RewardView.as_view()), #Working
     path('users/login/', UserLoginView.as_view()), #Working
     path('create_goal/', CreateGoal.as_view()), #Working
-    path('profile/', ProfileView.as_view())
+    path('profile/', ProfileView.as_view()), #Working
+    path('create_daily_progress/', create_daily_progress, name = 'create_daily_progress')
 ]
