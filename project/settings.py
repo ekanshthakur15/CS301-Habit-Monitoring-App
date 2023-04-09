@@ -45,9 +45,12 @@ INSTALLED_APPS = [
     # Third party
     'rest_framework',
     'rest_framework.authtoken',
+    'django_crontab',
+
 
     # Custom
     'goalship.apps.GoalshipConfig',
+    
 ]
 
 MIDDLEWARE = [
@@ -133,3 +136,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CRONJOBS = [
+    ('0 0 * * *', 'goalship.views.create_daily_progress'),
+]
+CRONTAB_COMMAND_SUFFIX = '2>&1'  # Redirect errors to stdout
+CRONTAB_DJANGO_PROJECT_NAME = 'project'
+CRONTAB_DJANGO_MANAGE_PATH = '/Users/ekanshthakur/Desktop/Goalship/.env/bin/python3 /Users/ekanshthakur/Desktop/Goalship/manage.py '
