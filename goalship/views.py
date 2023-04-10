@@ -165,7 +165,7 @@ class HomePageView(APIView):
 
     def get(self, request, date):
         user = request.user
-        friends = Friends.objects.filter(user = user)
+        friends = user.profile.friends.filter(user = user)
 
         date = datetime.strptime(date, '%Y-%m-%d').date()
 
@@ -214,3 +214,39 @@ def create_daily_progress():
             if not daily_progress_exists:
                 DailyProgress.objects.create(goal = goal, progress_date = timezone.now().today(), progress_amount = 0)
         return Response(status= status.HTTP_201_CREATED)
+
+class PersonalProgressListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        progress_counter = 0
+        limit_counter = 0
+        goals = Goal.objects.filter(user = user)
+        today = datetime.now().date()
+        all_goal_data = []
+        for goal in goals:
+            limit_counter += goal.progress
+            daily_progress = DailyProgress.objects.filter(goal = goal, progress_date = today).first()
+            if daily_progress is not None:
+                daily_amount = daily_progress.progress_amount
+            progress_counter += daily_amount
+        progress_percentage = (progress_counter/limit_counter)*100
+        total_date = {
+            'name': 'total_progress',
+            'progress_amount': progress_percentage,
+            'progress_type' : 'percentage'
+        }
+        all_goal_data.append(total_date)
+
+        for goal in goals:
+           daily_progress = DailyProgress.objects.filter(
+               goal=goal, progress_date=today).first()
+           daily_amount = daily_progress.progress_amount
+           data = {
+               'name': goal.name,
+               'progress_amount': daily_amount,
+               'progress_type': goal.progress_type
+           }
+           all_goal_data.append(data)
+        return Response(all_goal_data)
