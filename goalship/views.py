@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .serializers import GoalSerializer,FriendSerializer,RewardSerializer,ProfileSerializer,UserRewardSerializer,DailyProgressSerializer
-from .models import Goal, Profile, DailyProgress, Reward, UserReward
+from .serializers import *
+from .models import *
 from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import status
@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 #from .permissions import IsFriend
 
 
@@ -93,7 +94,7 @@ class UserRewardView(APIView):
 
 # Working View to show the list of friends and to create user 
 
-class UserListView(APIView):
+class FriendListView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request,format = None):
         serializer = ProfileSerializer(data= request.data)
@@ -215,6 +216,7 @@ def create_daily_progress():
                 DailyProgress.objects.create(goal = goal, progress_date = timezone.now().today(), progress_amount = 0)
         return Response(status= status.HTTP_201_CREATED)
 
+# View for personl progress information page
 class PersonalProgressListView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -230,7 +232,7 @@ class PersonalProgressListView(APIView):
             daily_progress = DailyProgress.objects.filter(goal = goal, progress_date = today).first()
             if daily_progress is not None:
                 daily_amount = daily_progress.progress_amount
-            progress_counter += daily_amount
+                progress_counter += daily_amount
         progress_percentage = (progress_counter/limit_counter)*100
         total_date = {
             'name': 'total_progress',
@@ -244,9 +246,36 @@ class PersonalProgressListView(APIView):
                goal=goal, progress_date=today).first()
            daily_amount = daily_progress.progress_amount
            data = {
+               'id':goal.id,
                'name': goal.name,
                'progress_amount': daily_amount,
                'progress_type': goal.progress_type
            }
            all_goal_data.append(data)
         return Response(all_goal_data)
+    
+    def put(self, request, goal_id):
+        try:
+            goal = Goal.objects.filter(id = goal_id)
+        except Goal.DoesNotExist:
+            Response(status= status.HTTP_404_NOT_FOUND)
+        serializer = UpdateDailyProgress(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializers.data, status= status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+#View for searching user
+class SearchView(APIView):
+    
+    def get(self, request):
+        list = []
+        search_query = request.query_params.get('q', '')
+        profiles = Profile.objects.filter(Q(name__icontains = search_query))
+        for profile in profiles:
+            data = {
+                "name" : profile.name,
+                "profile_picture": request.build_absolute_uri(profile.image.url)
+            }
+            list.append(data)
+        return Response(list)

@@ -59,3 +59,8 @@ class GoalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goal
         fields = '__all__'
+
+class UpdateDailyProgress(serializers.ModelSerializer):
+    class Meta:
+        model = DailyProgress
+        fields = ('progress_amount')
