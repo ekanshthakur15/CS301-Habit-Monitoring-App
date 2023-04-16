@@ -3,9 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'Add_Goal.dart';
-import 'Friends.dart';
 import 'HomePage.dart';
 import 'Settings.dart';
+import 'goals.dart';
 
 class Calender_Page extends StatefulWidget {
   @override
@@ -39,40 +39,21 @@ class _CalenderState extends State<Calender_Page> {
     return Scaffold(
       backgroundColor: themeBackGrnd,
       appBar: AppBar(
+          automaticallyImplyLeading: false,
           elevation: 0.0,
+          backgroundColor: themeColour,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => HomePage()));
-                    },
-                    child: FaIcon(
-                      Icons.arrow_back_ios,
-                      color: TextColour,
-                      size: 25.0,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    "Daily Record",
-                    style: TextStyle(
-                        color: TextColour,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0),
-                  ),
-                ],
+              Text(
+                "Daily Record",
+                style: TextStyle(
+                    color: TextColour,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0),
               ),
               GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => PersonalPage()));
-                },
+                onTap: () {},
                 child: FaIcon(
                   FontAwesomeIcons.user,
                   color: TextColour,
@@ -146,13 +127,13 @@ class _CalenderState extends State<Calender_Page> {
                     });
                   },
                   child: FaIcon(
-                    FontAwesomeIcons.calendar,
+                    Icons.emoji_events_rounded,
                     color: Colors.black,
-                    size: 20.0,
+                    size: 28.0,
                   )),
               //3
               Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
+                padding: const EdgeInsets.only(bottom: 25.0),
                 child: GestureDetector(
                   onTap: () {
                     showAddGoal(context);
@@ -178,9 +159,9 @@ class _CalenderState extends State<Calender_Page> {
                     });
                   },
                   child: FaIcon(
-                    FontAwesomeIcons.userGroup,
+                    FontAwesomeIcons.solidUser,
                     color: Colors.black,
-                    size: 20.0,
+                    size: 24.0,
                   )),
               //5
               GestureDetector(

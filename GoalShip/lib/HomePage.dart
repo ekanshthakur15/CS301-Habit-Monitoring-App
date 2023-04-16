@@ -1,15 +1,32 @@
-import 'package:calendar_appbar/calendar_appbar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inline_calendar/inline_calendar.dart';
+
+import 'Add_Goal.dart';
 import 'Calender.dart';
 import 'Settings.dart';
-import 'Friends.dart';
-import 'Add_Goal.dart';
+import 'goals.dart';
 
 Color themeColour = Color(0xA63DC5DB);
 Color themeBackGrnd = Colors.white;
+
+void showAddGoal(BuildContext ctx) {
+  showModalBottomSheet(
+    context: ctx,
+    builder: (_) {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        height: MediaQuery.of(ctx).size.height * 1.0,
+        child: Add_Goal(),
+      );
+    },
+    useSafeArea: true,
+    isScrollControlled: true,
+    // shape: CircleBorder(),
+  );
+}
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,29 +37,14 @@ class _HomePageState extends State<HomePage> {
   late CalendarCubit _controller;
 
   // For bottom drawer use modalBottomSheet
-  void showAddGoal(BuildContext ctx) {
-    showModalBottomSheet(
-      context: ctx,
-      builder: (_) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          height: MediaQuery.of(ctx).size.height * 1.0,
-          child: Add_Goal(),
-        );
-      },
-      useSafeArea: true,
-      isScrollControlled: true,
-      shape: CircleBorder(),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Color(0xA63DC5DB),
+        elevation: 0.0,
         title: Text("GoalShip"),
         bottom: InlineCalendar(
           controller: _controller,
@@ -81,13 +83,13 @@ class _HomePageState extends State<HomePage> {
                     });
                   },
                   child: FaIcon(
-                    FontAwesomeIcons.calendar,
+                    Icons.emoji_events_rounded,
                     color: Colors.black,
-                    size: 20.0,
+                    size: 28.0,
                   )),
               //3
               Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
+                padding: const EdgeInsets.only(bottom: 25.0),
                 child: GestureDetector(
                   onTap: () {
                     showAddGoal(context);
@@ -113,9 +115,9 @@ class _HomePageState extends State<HomePage> {
                     });
                   },
                   child: FaIcon(
-                    FontAwesomeIcons.userGroup,
+                    FontAwesomeIcons.solidUser,
                     color: Colors.black,
-                    size: 20.0,
+                    size: 24.0,
                   )),
               //5
               GestureDetector(

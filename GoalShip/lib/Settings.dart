@@ -1,10 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:goalship/signin.dart';
+
+import 'Add_Goal.dart';
 import 'Calender.dart';
 import 'HomePage.dart';
-import 'Friends.dart';
-import 'Add_Goal.dart';
+import 'friends.dart';
+import 'goals.dart';
 
 Color themeColour2 = Color(0xFFCECBCB);
 Color TextColour = Color(0xFF0000000);
@@ -37,7 +39,8 @@ class _Settings_PageState extends State<Settings_Page> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: themeBackGrnd,
+          automaticallyImplyLeading: false,
+          backgroundColor: themeColour,
           elevation: 0.0,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,7 +88,7 @@ class _Settings_PageState extends State<Settings_Page> {
           children: [
             Container(
               margin: EdgeInsets.all(20.0),
-              height: 390.0,
+              height: 300.0,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
                   border: Border.all(),
@@ -107,36 +110,18 @@ class _Settings_PageState extends State<Settings_Page> {
                   children: [
                     Expanded(
                         child: TextButton(
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Language",
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          SizedBox(
-                            width: 70.0,
-                          ),
-                          FaIcon(Icons.navigate_next_sharp)
-                        ],
-                      ),
-                    )),
-                    Expanded(
-                        child: TextButton(
                       onPressed: () {
-                        setState(() {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  buildPopupDialog());
-                        });
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FriendsSection()),
+                        );
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Change theme",
+                            "Social",
                             style: TextStyle(color: Colors.black),
                           ),
                           SizedBox(
@@ -151,15 +136,18 @@ class _Settings_PageState extends State<Settings_Page> {
                       onPressed: () {},
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            "Manage friends",
+                            "Profile Settings",
                             style: TextStyle(color: Colors.black),
                           ),
-                          SizedBox(
-                            width: 70.0,
+                          Text(
+                            name.text,
+                            selectionColor: Colors.black12,
+                            style: TextStyle(color: Colors.black12),
                           ),
-                          FaIcon(Icons.navigate_next_sharp),
+                          FaIcon(Icons.navigate_next_sharp)
                         ],
                       ),
                     )),
@@ -176,7 +164,7 @@ class _Settings_PageState extends State<Settings_Page> {
                           SizedBox(
                             width: 70.0,
                           ),
-                          FaIcon(Icons.navigate_next_sharp)
+                          FaIcon(Icons.navigate_next_sharp),
                         ],
                       ),
                     )),
@@ -272,13 +260,13 @@ class _Settings_PageState extends State<Settings_Page> {
                     });
                   },
                   child: FaIcon(
-                    FontAwesomeIcons.calendar,
+                    Icons.emoji_events_rounded,
                     color: Colors.black,
-                    size: 20.0,
+                    size: 28.0,
                   )),
               //3
               Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
+                padding: const EdgeInsets.only(bottom: 25.0),
                 child: GestureDetector(
                   onTap: () {
                     showAddGoal(context);
@@ -292,7 +280,8 @@ class _Settings_PageState extends State<Settings_Page> {
                     ),
                   ),
                 ),
-              ), //4
+              ),
+              //4
               GestureDetector(
                   onTap: () {
                     setState(() {
@@ -303,9 +292,9 @@ class _Settings_PageState extends State<Settings_Page> {
                     });
                   },
                   child: FaIcon(
-                    FontAwesomeIcons.userGroup,
+                    FontAwesomeIcons.solidUser,
                     color: Colors.black,
-                    size: 20.0,
+                    size: 24.0,
                   )),
               //5
               GestureDetector(
@@ -324,67 +313,6 @@ class _Settings_PageState extends State<Settings_Page> {
                   )),
             ],
           )),
-    );
-  }
-}
-
-class buildPopupDialog extends StatefulWidget {
-  @override
-  State<buildPopupDialog> createState() => _buildPopupDialogState();
-}
-
-class _buildPopupDialogState extends State<buildPopupDialog> {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Change Theme Colour'),
-      actions: <Widget>[
-        Column(
-          children: [
-            TextButton(
-                onPressed: () {
-                  setState(() {
-                    MaterialApp.router(
-                      theme: ThemeData(
-                        brightness: Brightness.light,
-                        primaryColorLight: Colors.white,
-                        primaryColorDark: Colors.black,
-                        appBarTheme: AppBarTheme(
-                          color: Colors.green,
-                        ),
-                        colorScheme: ColorScheme.fromSwatch()
-                            .copyWith(secondary: Color(0xFFE87CE4))
-                            .copyWith(background: Colors.white),
-                      ),
-                    );
-                    TextColour = Colors.black;
-                    Navigator.of(context).pop();
-                  });
-                },
-                child: Text("Light Theme")),
-            TextButton(
-                onPressed: () {
-                  setState(() {
-                    MaterialApp.router(
-                      theme: ThemeData(
-                        brightness: Brightness.dark,
-                        primaryColorDark: Colors.black,
-                        appBarTheme: AppBarTheme(
-                          color: Colors.black,
-                        ),
-                        colorScheme: ColorScheme.fromSwatch()
-                            .copyWith(secondary: Colors.greenAccent)
-                            .copyWith(background: Colors.black),
-                      ),
-                    );
-                    TextColour = Colors.white;
-                    Navigator.of(context).pop();
-                  });
-                },
-                child: Text("Dark Theme")),
-          ],
-        ),
-      ],
     );
   }
 }

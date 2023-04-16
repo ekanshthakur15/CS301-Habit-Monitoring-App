@@ -44,6 +44,7 @@ dependencies:
   cr_calendar:
   calendar_appbar:
   inline_calendar:
+  drop_down_list_menu:
 
 
 dev_dependencies:
