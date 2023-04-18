@@ -12,6 +12,6 @@ urlpatterns = [
     path('profile/', ProfileView.as_view()), #Working
     path('create_daily_progress/', create_daily_progress, name = 'create_daily_progress'), #Working
     path('personal_progress/', PersonalProgressListView.as_view()), #Working
-    path('personal_progress/goal_id/', PersonalProgressListView.as_view()),
+    path('personal_progress/<int:goal_id>/',PersonalProgressListView.as_view()),
     path('social/search/', SearchView.as_view()), #Working
 ]

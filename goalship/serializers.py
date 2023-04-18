@@ -43,6 +43,7 @@ class RewardSerializer(serializers.ModelSerializer):
 class UserRewardSerializer(serializers.ModelSerializer):
     user = UserSerializer(many = True)
     reward = RewardSerializer(many = True)
+    goal = serializers.PrimaryKeyRelatedField(queryset = Goal.objects.all())
     class Meta:
         model = UserReward
         fields = ('user', 'reward', 'redeemed')
@@ -63,4 +64,4 @@ class GoalSerializer(serializers.ModelSerializer):
 class UpdateDailyProgress(serializers.ModelSerializer):
     class Meta:
         model = DailyProgress
-        fields = ('progress_amount')
+        fields = ('progress_amount',)

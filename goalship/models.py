@@ -50,6 +50,9 @@ class DailyProgress(models.Model):
     progress_date = models.DateField()
     progress_amount = models.IntegerField()
 
+    def __str__(self) -> str:
+        return str(self.progress_date)
+
 # Model to store Rewards Detail
 
 class Reward(models.Model):
@@ -59,9 +62,13 @@ class Reward(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
 # Model to store the rewards earned by User
 
 class UserReward(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    goal = models.ForeignKey(Goal, on_delete= models.CASCADE, blank=True, null= True)
     reward = models.ForeignKey(Reward, related_name='reward_of',on_delete= models.CASCADE)
     redeemed = models.BooleanField(default=False)
+
+    

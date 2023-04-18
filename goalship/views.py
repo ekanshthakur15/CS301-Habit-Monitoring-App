@@ -25,11 +25,15 @@ from django.db.models import Q
 class CreateGoal(APIView):
 
     def post(self, request, format = None):
-        serializer = GoalSerializer(data= request.data)
+        serializer = GoalSerializer(data= request.data, partial = True)
         if serializer.is_valid():
             goal = serializer.save(user=request.user, start_date=date.today())
             daily_progress = DailyProgress(goal = goal, progress_date = date.today(), progress_amount = 0)
             daily_progress.save()
+            rewards = Reward.objects.all()
+            for reward in rewards:
+                user_reward = UserReward(goal = goal, user = request.user, reward = reward, redeemed = False)
+                user_reward.save()
             return Response(serializer.data, status= status.HTTP_201_CREATED)
         return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
 
@@ -186,7 +190,6 @@ class HomePageView(APIView):
                 friends_data['goals'].append(goal_data)
             friends_goal.append(friends_data)
         return Response(friends_goal, status= status.HTTP_200_OK)
-    
 
 #Working view for login
 class UserLoginView(APIView):
@@ -256,13 +259,29 @@ class PersonalProgressListView(APIView):
     
     def put(self, request, goal_id):
         try:
-            goal = Goal.objects.filter(id = goal_id)
+            goal = Goal.objects.filter(id = goal_id).first()
         except Goal.DoesNotExist:
             Response(status= status.HTTP_404_NOT_FOUND)
-        serializer = UpdateDailyProgress(data= request.data)
+        today = datetime.now().date()
+        print('something')
+        snippet = DailyProgress.objects.get(goal = goal,progress_date = today)
+        serializer = UpdateDailyProgress(snippet, data= request.data)
+        rewards = UserReward.objects.filter(user = request.user, goal = goal)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializers.data, status= status.HTTP_200_OK)
+            new_progress_amount = serializer.validated_data.get('progress_amount')
+
+            if new_progress_amount >= goal.progress:
+                goal.frequency += 1
+                goal.save()
+
+                current_frequency = goal.frequency
+                for reward in rewards:
+                    if (current_frequency >= reward.reward.points_required & reward.redeemed == False):
+                        reward.redeemed = True
+                        reward.save()
+
+            return Response(serializer.data, status= status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 #View for searching user
