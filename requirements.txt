@@ -12,6 +12,8 @@ cron-descriptor==1.2.35
 Django==4.0.10
 django-celery-beat==2.5.0
 django-celery-results==2.5.0
+django-cors-headers==3.10.1
+django-crontab==0.7.1
 django-timezone-field==5.0
 djangorestframework==3.13.1
 kombu==5.2.4

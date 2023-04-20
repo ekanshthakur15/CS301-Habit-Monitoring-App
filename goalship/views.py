@@ -53,7 +53,7 @@ class ProfileView(APIView):
             'name': profile.name,
             'age':profile.age,
             'gender' : profile.gender,
-            'profile_picture': request.build_absolute_uri(profile.image),
+            'profile_picture': profile.image,
             'email' : profile.user.email
         }
         return Response(data)
@@ -204,7 +204,6 @@ class UserLoginView(APIView):
             return Response({'token': token.key})
         return Response(status= status.HTTP_400_BAD_REQUEST)
     
-
 # View to create a dailyprogress object for every goal daily
 
 def create_daily_progress():
@@ -230,6 +229,8 @@ class PersonalProgressListView(APIView):
         goals = Goal.objects.filter(user = user)
         today = datetime.now().date()
         all_goal_data = []
+
+        # to get the total progress percentage
         for goal in goals:
             limit_counter += goal.progress
             daily_progress = DailyProgress.objects.filter(goal = goal, progress_date = today).first()
@@ -244,45 +245,20 @@ class PersonalProgressListView(APIView):
         }
         all_goal_data.append(total_date)
 
+        # to get the informationn about every goal
         for goal in goals:
            daily_progress = DailyProgress.objects.filter(
                goal=goal, progress_date=today).first()
            daily_amount = daily_progress.progress_amount
+           progress_percentage = (daily_amount/goal.progress)*100
            data = {
                'id':goal.id,
                'name': goal.name,
-               'progress_amount': daily_amount,
-               'progress_type': goal.progress_type
+               'icon': goal.image,
+               'progress_amount': progress_percentage,
            }
            all_goal_data.append(data)
         return Response(all_goal_data)
-    
-    def put(self, request, goal_id):
-        try:
-            goal = Goal.objects.filter(id = goal_id).first()
-        except Goal.DoesNotExist:
-            Response(status= status.HTTP_404_NOT_FOUND)
-        today = datetime.now().date()
-        print('something')
-        snippet = DailyProgress.objects.get(goal = goal,progress_date = today)
-        serializer = UpdateDailyProgress(snippet, data= request.data)
-        rewards = UserReward.objects.filter(user = request.user, goal = goal)
-        if serializer.is_valid():
-            serializer.save()
-            new_progress_amount = serializer.validated_data.get('progress_amount')
-
-            if new_progress_amount >= goal.progress:
-                goal.frequency += 1
-                goal.save()
-
-                current_frequency = goal.frequency
-                for reward in rewards:
-                    if (current_frequency >= reward.reward.points_required & reward.redeemed == False):
-                        reward.redeemed = True
-                        reward.save()
-
-            return Response(serializer.data, status= status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 #View for searching user
 class SearchView(APIView):
@@ -294,7 +270,61 @@ class SearchView(APIView):
         for profile in profiles:
             data = {
                 "name" : profile.name,
-                "profile_picture": request.build_absolute_uri(profile.image.url)
+                "profile_picture": profile.image
             }
             list.append(data)
         return Response(list)
+
+#incomplete View
+class GoalDetail(APIView):
+    def get(self, request, goal_id):
+        try:
+            goal = Goal.objects.get(id=goal_id)
+        except Goal.DoesNotExist:
+            Response(status=status.HTTP_404_NOT_FOUND)
+        today = datetime.now().date()
+        daily_progress = DailyProgress.objects.get(goal = goal, progress_date = today)
+        completed = (daily_progress.progress_amount)/(goal.progress)*100
+        
+    def put(self, request, goal_id):
+        try:
+            goal = Goal.objects.filter(id=goal_id).first()
+        except Goal.DoesNotExist:
+            Response(status=status.HTTP_404_NOT_FOUND)
+        today = datetime.now().date()
+        print('something')
+        snippet = DailyProgress.objects.get(goal=goal, progress_date=today)
+        serializer = UpdateDailyProgress(snippet, data=request.data)
+        rewards = UserReward.objects.filter(user=request.user, goal=goal)
+        if serializer.is_valid():
+            serializer.save()
+            new_progress_amount = serializer.validated_data.get(
+                'progress_amount')
+
+            if new_progress_amount >= goal.progress:
+                goal.frequency += 1
+                goal.save()
+
+                current_frequency = goal.frequency
+                for reward in rewards:
+                    if (current_frequency >= reward.reward.points_required & reward.redeemed == False):
+                        reward.redeemed = True
+                        reward.save()
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# View for Reward detail
+
+class UserRewardDetail(APIView):
+    def get(self, request, reward_id):
+        reward = Reward.objects.get(id = reward_id)
+        user_reward = UserReward.objects.filter(reward = reward , user = request.user)
+        goals = user_reward.goal.all()
+        goal= []
+        
+        data = {
+            "name ": reward.name,
+            "description":reward.description,
+            "image": reward.image,
+        }

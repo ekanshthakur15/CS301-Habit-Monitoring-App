@@ -10,7 +10,7 @@ class Profile(models.Model):
     name = models.CharField(max_length= 30)
     user = models.OneToOneField(User, on_delete= models.CASCADE)
     age = models.PositiveIntegerField()
-    image = models.ImageField(upload_to='profle_image', blank= True)
+    image = models.IntegerField(blank= True, null= True)
     gender_choice = (
         ('Male', 'male'),
         ('female', 'Female'),
@@ -26,6 +26,7 @@ class Profile(models.Model):
 class Goal(models.Model):
     name = models.CharField(max_length=20)
     user = models.ForeignKey(User, on_delete= models.CASCADE)
+    image = models.IntegerField(default= 0)
     start_date = models.DateField(default= date.today, blank= True)
     duration = models.IntegerField(default= 7)
     progress_choice = (
@@ -35,7 +36,9 @@ class Goal(models.Model):
         ('Meters', 'meters'),
         ('kilometers', 'Kilometer'),
         ('steps', 'Steps'),
-        ('times', 'Times')
+        ('times', 'Times'),
+        ('litres', 'Litre'),
+        ('ml', 'Ml'),
     )
     progress = models.IntegerField(default= 0)
     progress_type = models.CharField(max_length=10, choices= progress_choice, default='times')
@@ -57,6 +60,7 @@ class DailyProgress(models.Model):
 
 class Reward(models.Model):
     name = models.CharField(max_length=50)
+    image = models.IntegerField(default=0)
     description = models.CharField(max_length= 100)
     points_required = models.IntegerField()
 
