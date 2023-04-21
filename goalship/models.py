@@ -74,5 +74,3 @@ class UserReward(models.Model):
     goal = models.ForeignKey(Goal, on_delete= models.CASCADE, blank=True, null= True)
     reward = models.ForeignKey(Reward, related_name='reward_of',on_delete= models.CASCADE)
     redeemed = models.BooleanField(default=False)
-
-    

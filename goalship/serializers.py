@@ -7,12 +7,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "username", 'email', 'password')
-        depth = 1
 
 class FriendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('id', 'name', 'age', 'gender')
+
 class ProfileSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only = True)
     user = UserSerializer()
@@ -25,7 +25,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user_data = validated_data.pop('user')
         profile = Profile.objects.create(**validated_data)
-        User.objects.create(**user_data)
+        User.objects.create_user(**user_data)
         return profile
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)

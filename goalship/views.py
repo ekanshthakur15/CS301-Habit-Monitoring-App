@@ -113,15 +113,15 @@ class FriendListView(APIView):
         data = []
         for friend in friends:
             user = friend.user
-            user_rewards = UserReward.objects.filter(user = user)
+            user_rewards = UserReward.objects.filter(user = user, redeemed = True)
             rewards_count = user_rewards.count()
             friend_data = {
                 'name' : user.profile.name,
-                'profile_picture' : request.build_absolute_uri(user.profile.image.url),
+                'profile_picture' : friend.image,
                 'reward_count': rewards_count,
             }
             data.append(friend_data)
-        return Response(data)
+        return Response(data, status= status.HTTP_200_OK)
     
 # Working View to display info about a friend and remove them
 
@@ -146,7 +146,7 @@ class UserDetail(APIView):
             })
         data = {
             'name' : friend_profile.name,
-            'profile_picture' : request.build_absolute_uri(friend_profile.image.url),
+            'profile_picture' : friend_profile.image,
             'rewards' : reward_data
         }
 
@@ -164,20 +164,19 @@ class UserDetail(APIView):
         user = request.user
         user.profile.friends.add(friend)
         return Response(status=status.HTTP_201_CREATED)
+
 #View to display the information about the goals of the friends
 
 class HomePageView(APIView):
 
-    def get(self, request, date):
+    def get(self, request, date_str):
+        date = datetime.strptime(date_str, '%Y-%m-%x').date()
         user = request.user
         friends = user.profile.friends.filter(user = user)
-
-        date = datetime.strptime(date, '%Y-%m-%d').date()
-
         friends_goal = []
         for friend in friends:
             friends_data = {'name': friend.friend_of.name, 'goals': []}
-            goals = Goal.objects.filter(user = friend.friend_of)
+            goals = Goal.objects.filter(user = friend.friend_of).order_by['name']
             for goal in goals:
                 goal_data = GoalSerializer(goal).data
                 daily_progress = DailyProgress.objects.filter(goal = goal, progress_date = date
@@ -276,7 +275,7 @@ class SearchView(APIView):
         return Response(list)
 
 #incomplete View
-class GoalDetail(APIView):
+class GoalDetailView(APIView):
     def get(self, request, goal_id):
         try:
             goal = Goal.objects.get(id=goal_id)
@@ -284,7 +283,24 @@ class GoalDetail(APIView):
             Response(status=status.HTTP_404_NOT_FOUND)
         today = datetime.now().date()
         daily_progress = DailyProgress.objects.get(goal = goal, progress_date = today)
-        completed = (daily_progress.progress_amount)/(goal.progress)*100
+        progress_percentage = (daily_progress.progress_amount)/(goal.progress)*100
+        dates = []
+        completed_objects = DailyProgress.objects.filter(goal = goal)
+        for object in completed_objects:
+            if object.progress_amount >= goal.progress:
+                date = {
+                    "completed_date": object.progress_date,
+                }
+                dates.append(date)
+        detail = {
+            "name": goal.name,
+            "progress_percentage": progress_percentage,
+            "completed_dates": dates,
+            "duration":goal.duration,
+            "completed": goal.frequency
+        }
+        return Response(detail)
+        
         
     def put(self, request, goal_id):
         try:
@@ -319,12 +335,21 @@ class GoalDetail(APIView):
 class UserRewardDetail(APIView):
     def get(self, request, reward_id):
         reward = Reward.objects.get(id = reward_id)
-        user_reward = UserReward.objects.filter(reward = reward , user = request.user)
-        goals = user_reward.goal.all()
-        goal= []
+        user_rewards = UserReward.objects.filter(reward = reward , user = request.user)
+        associated_goals = []
+        for user_reward in user_rewards:
+            goals = {
+                "goal_name": user_reward.goal.name,
+                "redeemed" : user_reward.redeemed
+            }
+            associated_goals.append(goals)
         
         data = {
             "name ": reward.name,
             "description":reward.description,
             "image": reward.image,
+            "associated_goals": associated_goals
+            
         }
+        
+        return Response(data)
