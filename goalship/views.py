@@ -167,29 +167,6 @@ class UserDetail(APIView):
 
 #View to display the information about the goals of the friends
 
-class HomePageView(APIView):
-
-    def get(self, request, date_str):
-        date = datetime.strptime(date_str, '%Y-%m-%x').date()
-        user = request.user
-        friends = user.profile.friends.filter(user = user)
-        friends_goal = []
-        for friend in friends:
-            friends_data = {'name': friend.friend_of.name, 'goals': []}
-            goals = Goal.objects.filter(user = friend.friend_of).order_by['name']
-            for goal in goals:
-                goal_data = GoalSerializer(goal).data
-                daily_progress = DailyProgress.objects.filter(goal = goal, progress_date = date
-                                                              ).first()
-                if daily_progress:
-                    progress_data = DailyProgressSerializer(daily_progress).data
-                    goal_data['today_progress'] = progress_data['progress_amount']
-                else:
-                    goal_data['today_progress'] = None
-                friends_data['goals'].append(goal_data)
-            friends_goal.append(friends_data)
-        return Response(friends_goal, status= status.HTTP_200_OK)
-
 #Working view for login
 class UserLoginView(APIView):
     @csrf_exempt
@@ -333,6 +310,7 @@ class GoalDetailView(APIView):
 # View for Reward detail
 
 class UserRewardDetail(APIView):
+
     def get(self, request, reward_id):
         reward = Reward.objects.get(id = reward_id)
         user_rewards = UserReward.objects.filter(reward = reward , user = request.user)
@@ -353,3 +331,34 @@ class UserRewardDetail(APIView):
         }
         
         return Response(data)
+    
+class HomePageView(APIView):
+
+    def get(self, request, date_str):
+        date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        user_profile = get_object_or_404(Profile, user = request.user)
+
+        friend_list = user_profile.friends.all()
+        whole_data = []
+        
+        for friend in friend_list:
+            goals = Goal.objects.filter( user = friend.user)
+            goal_data = []
+            for goal in goals:
+                progress = DailyProgress.objects.filter(goal = goal, progress_date = date).first()
+                target = goal.progress
+                goal_progress = (progress.progress_amount/target)*100
+                data = {
+                    "goal_name": goal.name,
+                    "goal_progress" : goal_progress
+                }
+                goal_data.append(data)
+
+            friend_data = {
+                "name" : friend.name,
+                "goals" : goal_data
+            }
+            whole_data.append(friend_data)
+
+
+        return Response(whole_data,status=status.HTTP_200_OK)

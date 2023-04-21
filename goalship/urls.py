@@ -12,7 +12,7 @@ urlpatterns = [
     path('profile/', ProfileView.as_view()), #Working
     path('create_daily_progress/', create_daily_progress, name = 'create_daily_progress'), #Working
     path('personal_progress/', PersonalProgressListView.as_view()), #Working
-    path('goal_detail/<int:goal_id>/', GoalDetailView.as_view()),
+    path('goal_detail/<int:goal_id>/', GoalDetailView.as_view()), # Working
     path('social/search/', SearchView.as_view()), #Working
-    path('reward_detail/<int:reward_id>/', UserRewardDetail.as_view()), #Working but for now not returning the goals associated
+    path('reward_detail/<int:reward_id>/', UserRewardDetail.as_view()), #Working
 ]
