@@ -7,6 +7,8 @@ class FriendsSection extends StatefulWidget {
   State<FriendsSection> createState() => _FriendsSectionState();
 }
 
+String FriendsUrl = "http://10.0.2.2:8000/friend_detail/";
+
 class _FriendsSectionState extends State<FriendsSection> {
   final List<String> items = [
     'Jacob',

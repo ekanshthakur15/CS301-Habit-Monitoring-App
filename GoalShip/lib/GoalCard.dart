@@ -1,13 +1,49 @@
 import 'package:flutter/material.dart';
 
+import 'Add_Goal.dart';
+
 class GoalCard extends StatelessWidget {
-  GoalCard(this.goalName);
-  final String goalName;
+  GoalCard({required this.GoalName, required this.GoalIconId});
+
+  String GoalName;
+  int GoalIconId;
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Card(
+    return TextButton(
+      onPressed: () {},
+      child: Container(
+        child: Column(
+          children: [
+            Image.asset(GoalIcons.elementAt(GoalIconId)),
+            Text(
+              GoalName,
+              style: TextStyle(color: Colors.black),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/*
+FutureBuilder<Card_Goal>(
+  future: futureGoal,
+  builder: (context, snapshot) {
+    if (snapshot.hasData) {
+      return Text(snapshot.data!.name);
+    } else if (snapshot.hasError) {
+      return Text('${snapshot.error}');
+    }
+
+    return const CircularProgressIndicator();
+  },
+)
+ */
+
+/*
+Card(
         shape: RoundedRectangleBorder(
           side: BorderSide(width: 1.0),
           borderRadius: BorderRadius.circular(35.0),
@@ -37,6 +73,4 @@ class GoalCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
+ */

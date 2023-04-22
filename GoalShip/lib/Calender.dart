@@ -4,8 +4,8 @@ import 'package:table_calendar/table_calendar.dart';
 
 import 'Add_Goal.dart';
 import 'HomePage.dart';
+import 'Personal.dart';
 import 'Settings.dart';
-import 'goals.dart';
 
 class Calender_Page extends StatefulWidget {
   @override

@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:goalship/HomePage.dart';
-import 'welcome.dart';
-import 'signin.dart';
 import 'package:drop_down_list_menu/drop_down_list_menu.dart';
+import 'package:flutter/material.dart';
+
+import 'HomePage.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -10,16 +9,16 @@ class SignIn extends StatefulWidget {
 }
 
 TextEditingController name = TextEditingController();
+TextEditingController emailId = TextEditingController();
+TextEditingController age = TextEditingController();
+TextEditingController DoB = TextEditingController();
+TextEditingController password = TextEditingController();
+List<String> _list = ['Select Gender', 'Male', 'Female'];
+String _selectedItem = _list[0];
+String Name = '';
+String Password = '';
 
 class _SignInState extends State<SignIn> {
-
-  TextEditingController emailId = TextEditingController();
-  TextEditingController age = TextEditingController();
-  TextEditingController DoB = TextEditingController();
-
-  List<String> _list = ['Select Gender', 'Male', 'Female'];
-  String _selectedItem = 'Select Gender';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,10 +26,9 @@ class _SignInState extends State<SignIn> {
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/mountain.jpg"),
-              filterQuality: FilterQuality.high,
-              fit: BoxFit.cover,
-            ),
+                image: AssetImage('assets/login.jpg'),
+                filterQuality: FilterQuality.high,
+                fit: BoxFit.cover),
           ),
           height: MediaQuery.of(context).size.height * 1.0,
           child: Padding(
@@ -71,107 +69,127 @@ class _SignInState extends State<SignIn> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 25.0, vertical: 2.0),
-                  child: Text(
-                    "Name",
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                ),
                 Container(
                   margin: EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
+                      borderRadius: BorderRadius.circular(9.0),
                       border: Border.all()),
                   child: TextFormField(
                     controller: name,
-                  ),
-                ),
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 25.0, vertical: 2.0),
-                  child: Text(
-                    "Email",
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      filled: true,
+                      fillColor: Colors.white30,
+                      hintText: "Name",
+                      hintStyle: TextStyle(color: Colors.black26, fontSize: 20),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                    ),
                   ),
                 ),
                 Container(
                   margin: EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
+                      borderRadius: BorderRadius.circular(9.0),
                       border: Border.all()),
                   child: TextFormField(
                     controller: emailId,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      filled: true,
+                      fillColor: Colors.white30,
+                      hintText: "Email",
+                      hintStyle: TextStyle(color: Colors.black26, fontSize: 20),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(9.0),
+                      border: Border.all()),
+                  child: TextFormField(
+                    controller: password,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      filled: true,
+                      fillColor: Colors.white30,
+                      hintText: "Password",
+                      hintStyle: TextStyle(color: Colors.black26, fontSize: 20),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                    ),
                   ),
                 ),
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        margin: EdgeInsets.all(20.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        child: TextFormField(
-                          controller: age,
-                          decoration: InputDecoration(
-                            label: Text("Age"),
-                            hintText: "Age",
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 20.0),
+                        child: Container(
+                          margin: EdgeInsets.all(20.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(),
+                            borderRadius: BorderRadius.circular(9.0),
+                          ),
+                          child: TextFormField(
+                            controller: age,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: Colors.white30,
+                              hintText: "Age",
+                              hintStyle: TextStyle(
+                                  color: Colors.black26, fontSize: 20),
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 20, horizontal: 10),
+                            ),
                           ),
                         ),
                       ),
                     ), // Age
                     Expanded(
                       child: Container(
-                        margin: EdgeInsets.all(20.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            border: Border.all()),
-                        child: TextFormField(
-                          controller: DoB,
-                          decoration: InputDecoration(
-                            label: Text("Date of Birth"),
-                            hintText: "Date of Birth",
-                          ),
+                        child: DropDownMenu(
+                          title: 'Gender',
+                          enabled: true,
+                          values: _list,
+                          value: _selectedItem,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedItem = value!;
+                            });
+                          },
+                          themeFont: true,
                         ),
                       ),
                     ),
                   ],
                 ),
                 Center(
-                  child: Container(
-                    width: 175.0,
-                    child: DropDownMenu(
-                      title: 'Gender',
-                      enabled: true,
-                      values: _list,
-                      value: _selectedItem,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedItem = value!;
-                        });
-                      },
-                      themeFont: true,
-                    ),
-                  ),
-                ),
-                Center(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 18.0, bottom: 15.0),
                     child: Container(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      height: 50.0,
+                      width: MediaQuery.of(context).size.width * 0.92,
+                      height: 55.0,
                       decoration: BoxDecoration(
-                        color: Colors.greenAccent,
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(15.0),
+                        color: Colors.lightBlueAccent,
+                        border: Border.all(color: Color(0xFF40C5DB), width: 2),
+                        borderRadius: BorderRadius.circular(9.0),
                       ),
                       child: TextButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Color(0xFFB5E8F0)),
+
+                          // add this line
+                        ),
                         onPressed: () {
+                          setState(() {
+                            Name = name.text;
+                          });
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -179,7 +197,7 @@ class _SignInState extends State<SignIn> {
                         },
                         child: Text(
                           "Sign up",
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.black, fontSize: 20.0),
                         ),
                       ),
                     ),

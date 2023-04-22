@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:goalship/friends.dart';
 
-class FriendsSearch extends StatefulWidget {
-  @override
-  State<FriendsSearch> createState() => _FriendsSearchState();
-}
-
-class _FriendsSearchState extends State<FriendsSearch> {
+class FriendsSearch extends StatelessWidget {
   final List<String> items = [
     'Jacob',
     'Ekansh',
@@ -23,18 +17,8 @@ class _FriendsSearchState extends State<FriendsSearch> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Search Friend"),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => FriendsSection()));
-          },
-          icon: Icon(
-            Icons.arrow_back_ios_sharp,
-            color: Colors.black,
-          ),
-        ),
+      appBar: CustomAppBar(
+        title: 'List View Demo',
       ),
       body: Padding(
         padding: EdgeInsets.only(top: 16),

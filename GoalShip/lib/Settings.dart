@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:goalship/signin.dart';
+import 'package:goalship/profileSettings.dart';
 
 import 'Add_Goal.dart';
 import 'Calender.dart';
 import 'HomePage.dart';
+import 'Personal.dart';
 import 'friends.dart';
-import 'goals.dart';
+import 'login.dart';
 
-Color themeColour2 = Color(0xFFCECBCB);
+Color themeColour2 = Color(0xFFADE7EE);
 Color TextColour = Color(0xFF0000000);
 
 class Settings_Page extends StatefulWidget {
@@ -40,7 +41,7 @@ class _Settings_PageState extends State<Settings_Page> {
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: themeColour,
+          backgroundColor: Colors.transparent,
           elevation: 0.0,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,39 +71,44 @@ class _Settings_PageState extends State<Settings_Page> {
                   ),
                 ],
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => PersonalPage()));
-                },
-                child: FaIcon(
-                  FontAwesomeIcons.user,
-                  color: TextColour,
-                ),
-              )
             ],
           )),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 30.0),
+                  child: Text(
+                    "Hello, ${userName.text}",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                  ),
+                ),
+                SizedBox(
+                  width: 70.0,
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 5.0, right: 10.0),
+                  child: Image.asset(
+                    "assets/user_male.png",
+                    width: 120,
+                    height: 120,
+                  ),
+                ),
+              ],
+            ),
             Container(
-              margin: EdgeInsets.all(20.0),
+              margin:
+                  EdgeInsets.only(top: 20.0, left: 20, right: 20, bottom: 30),
               height: 300.0,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(),
-                  color: themeColour2,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black54,
-                      blurRadius: 10.0,
-                      offset: const Offset(
-                        5.0,
-                        5.0,
-                      ),
-                    )
-                  ]),
+                borderRadius: BorderRadius.circular(20.0),
+                color: themeColour2,
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -133,7 +139,14 @@ class _Settings_PageState extends State<Settings_Page> {
                     )),
                     Expanded(
                         child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfileSettings(),
+                          ),
+                        );
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -142,10 +155,13 @@ class _Settings_PageState extends State<Settings_Page> {
                             "Profile Settings",
                             style: TextStyle(color: Colors.black),
                           ),
+                          SizedBox(
+                            width: 26.0,
+                          ),
                           Text(
-                            name.text,
+                            "${userName.text}",
                             selectionColor: Colors.black12,
-                            style: TextStyle(color: Colors.black12),
+                            style: TextStyle(color: Colors.black45),
                           ),
                           FaIcon(Icons.navigate_next_sharp)
                         ],
@@ -207,23 +223,25 @@ class _Settings_PageState extends State<Settings_Page> {
               ),
             ),
             Container(
-              margin: EdgeInsets.all(30.0),
+              margin: EdgeInsets.all(20.0),
               height: 50.0,
+              width: 400,
               decoration: BoxDecoration(
-                  color: themeColour,
-                  border: Border.all(
-                    color: themeColour,
-                  ),
-                  borderRadius: BorderRadius.circular(20.0)),
+                color: Colors.white,
+                border: Border.all(color: Color(0xFF40C5DB)),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 child: Center(
                   child: Text(
                     "LOG OUT",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 17,
-                        color: themeBackGrnd),
+                        color: themeColour2),
                   ),
                 ),
               ),

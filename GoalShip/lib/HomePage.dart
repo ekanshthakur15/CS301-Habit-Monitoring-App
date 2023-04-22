@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:goalship/Rewards.dart';
 import 'package:inline_calendar/inline_calendar.dart';
 
 import 'Add_Goal.dart';
-import 'Calender.dart';
+import 'Personal.dart';
 import 'Settings.dart';
-import 'goals.dart';
 
 Color themeColour = Color(0xA63DC5DB);
 Color themeBackGrnd = Colors.white;
@@ -45,14 +45,136 @@ class _HomePageState extends State<HomePage> {
         automaticallyImplyLeading: false,
         backgroundColor: Color(0xA63DC5DB),
         elevation: 0.0,
-        title: Text("GoalShip"),
+        title: Text(
+          "GoalShip",
+          style: TextStyle(color: Colors.black),
+        ),
         bottom: InlineCalendar(
           controller: _controller,
           onChange: (DateTime d) => print(d),
         ),
       ),
       body: Container(
-        color: themeBackGrnd,
+        child: Padding(
+          padding: EdgeInsets.only(left: 30.0, top: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Ekansh",
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 10.0),
+                child: Container(
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 55.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(9.0),
+                          color: Colors.grey.shade200,
+                        ),
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 20.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(
+                                backgroundColor: Colors.grey,
+                                value: 0.30,
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.black),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 18.0),
+                                child: Text(
+                                  "Goal 1",
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 13.0,
+                      ),
+                      Container(
+                        height: 55.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(9.0),
+                          color: Colors.grey.shade200,
+                        ),
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 20.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(
+                                backgroundColor: Colors.grey,
+                                value: 0.30,
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.black),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 18.0),
+                                child: Text(
+                                  "Goal 2",
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 13.0,
+                      ),
+                      Container(
+                        height: 55.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(9.0),
+                          color: Colors.grey.shade200,
+                        ),
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 20.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(
+                                backgroundColor: Colors.grey,
+                                value: 0.30,
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.black),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 18.0),
+                                child: Text(
+                                  "Goal 3",
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
           elevation: 0.0,
@@ -76,10 +198,8 @@ class _HomePageState extends State<HomePage> {
               GestureDetector(
                   onTap: () {
                     setState(() {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Calender_Page()));
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => Rewards()));
                     });
                   },
                   child: FaIcon(
@@ -152,3 +272,63 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 }
+
+List<Widget> Shared_goals = [];
+List<Widget> DailySharedList = [];
+
+/*
+format for Shared_goals :
+
+Container(
+      height: 55.0,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(9.0),
+        color: Colors.grey.shade200,
+      ),
+      width: MediaQuery.of(context).size.width * 0.8,
+      child: Padding(
+        padding: EdgeInsets.only(left: 20.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              backgroundColor: Colors.grey,
+              value: 0.30,
+              valueColor:
+                  AlwaysStoppedAnimation(Colors.black),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 18.0),
+              child: Text(
+                <Goal Name>,
+                style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+         ],
+      ),
+   ),
+),
+ */
+
+/*
+format for DailySharedList :
+ child: Column(
+   crossAxisAlignment: CrossAxisAlignment.start,
+   children: [
+     Text(
+       <Friend Name>,
+       style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+     ),
+     Container(
+        width : MediaQuery.of(context).size.width * 0.85,
+        height : 200.0,
+        child : GridView.count(
+            count : 1,
+            children : Shared_goals
+        ),
+     ),
+   ],
+)
+ */

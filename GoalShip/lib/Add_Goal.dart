@@ -1,24 +1,50 @@
 import 'package:drop_down_list_menu/drop_down_list_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:goalship/goals.dart';
+import 'package:goalship/HomePage.dart';
 
 import 'GoalCard.dart';
+import 'Personal.dart';
 
 class Add_Goal extends StatefulWidget {
   @override
   _Add_GoalState createState() => _Add_GoalState();
 }
 
+List<String> GoalIcons = [
+  'assets/Cross_country_race.png',
+  'assets/Early_morning_amico.png',
+  'assets/Meditation.png',
+  'assets/Studying.png',
+  'assets/Workout.png',
+  'assets/Business.png'
+];
+
 String Hobby_name = "";
+
 int no_of_dates = 0;
+
+bool _hasbeenSelected0 = false;
+bool _hasbeenSelected1 = false;
+bool _hasbeenSelected2 = false;
+bool _hasbeenSelected3 = false;
+bool _hasbeenSelected4 = false;
+bool _hasbeenSelected5 = false;
+
 String freq = '';
+
 TextEditingController goalName = TextEditingController();
+
 TextEditingController goalDuration = TextEditingController();
+
 bool switch_state = false;
+
 MaterialStateColor buttonColor =
     MaterialStateColor.resolveWith((states) => Color(0xA63DC5DB));
+
 Color buttonColor2 = Color(0xA63DC5DB);
+
+int imageLocation = 0;
 
 class _Add_GoalState extends State<Add_Goal> {
   void onChanged(bool val) {
@@ -43,8 +69,139 @@ class _Add_GoalState extends State<Add_Goal> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> GoalIconCards = [
+      Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        child: TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor:
+                _hasbeenSelected0 ? themeColour.withOpacity(0.3) : Colors.white,
+          ),
+          onPressed: () {
+            setState(() {
+              _hasbeenSelected0 = !_hasbeenSelected0;
+              imageLocation = 0;
+            });
+          },
+          child: Image.asset(
+            GoalIcons.elementAt(0),
+          ),
+        ),
+      ),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        child: TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor:
+                _hasbeenSelected1 ? themeColour.withOpacity(0.3) : Colors.white,
+          ),
+          onPressed: () {
+            setState(() {
+              _hasbeenSelected1 = !_hasbeenSelected1;
+              imageLocation = 1;
+            });
+          },
+          child: Image.asset(
+            GoalIcons.elementAt(1),
+          ),
+        ),
+      ),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        child: TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor:
+                _hasbeenSelected2 ? themeColour.withOpacity(0.3) : Colors.white,
+          ),
+          onPressed: () {
+            setState(() {
+              _hasbeenSelected2 = !_hasbeenSelected2;
+              imageLocation = 2;
+            });
+          },
+          child: Image.asset(
+            GoalIcons.elementAt(2),
+          ),
+        ),
+      ),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        child: TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor:
+                _hasbeenSelected3 ? themeColour.withOpacity(0.3) : Colors.white,
+          ),
+          onPressed: () {
+            setState(() {
+              _hasbeenSelected3 = !_hasbeenSelected3;
+              imageLocation = 3;
+            });
+          },
+          child: Image.asset(
+            GoalIcons.elementAt(3),
+          ),
+        ),
+      ),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        child: TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor:
+                _hasbeenSelected4 ? themeColour.withOpacity(0.3) : Colors.white,
+          ),
+          onPressed: () {
+            setState(() {
+              _hasbeenSelected4 = !_hasbeenSelected4;
+              imageLocation = 4;
+            });
+          },
+          child: Image.asset(
+            GoalIcons.elementAt(4),
+          ),
+        ),
+      ),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        child: TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor:
+                _hasbeenSelected5 ? themeColour.withOpacity(0.3) : Colors.white,
+          ),
+          onPressed: () {
+            setState(() {
+              _hasbeenSelected5 = !_hasbeenSelected5;
+              imageLocation = 5;
+            });
+          },
+          child: Image.asset(
+            GoalIcons.elementAt(5),
+          ),
+        ),
+      ),
+    ];
+
+    /* Here onwards main code*/
+
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.transparent,
           automaticallyImplyLeading: false,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -54,7 +211,7 @@ class _Add_GoalState extends State<Add_Goal> {
               ),
               Text(
                 'Create new Goal',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 25),
               ),
               GestureDetector(
                 onTap: () {
@@ -82,15 +239,27 @@ class _Add_GoalState extends State<Add_Goal> {
                 SizedBox(
                   height: 20.0,
                 ),
+                Padding(
+                  padding: EdgeInsets.only(left: 20.0),
+                  child: Text(
+                    "Goal Name",
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
+                ),
                 Container(
                   margin: EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      border: Border.all()),
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(color: Color(0xFF40C5DB)),
+                  ),
                   child: TextFormField(
                     controller: goalName,
                     decoration: InputDecoration(
+                      border: InputBorder.none,
                       hintText: "Hobby Name",
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 10.0),
                     ),
                   ),
                 ),
@@ -105,102 +274,66 @@ class _Add_GoalState extends State<Add_Goal> {
                 Container(
                   margin: EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      border: Border.all()),
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(color: Color(0xFF40C5DB)),
+                  ),
                   child: TextFormField(
                     keyboardType: TextInputType.number,
                     controller: goalDuration,
                     decoration: InputDecoration(
+                      border: InputBorder.none,
                       hintText: "Number of days",
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 10.0),
                     ),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 22.0),
+                  padding: EdgeInsets.only(left: 20.0, bottom: 20),
                   child: Text(
-                    "Choose frequency",
+                    "Choose icon",
                     style:
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(child: Reusable_card('Daily')),
-                    Expanded(child: Reusable_card('Weekly')),
-                    Expanded(child: Reusable_card('Monthly')),
-                  ],
-                ),
-                Center(
-                  child: Text(
-                    "On these dates",
-                  ),
-                ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Reusable_card_Day('Mon'),
-                      Reusable_card_Day('Tue'),
-                      Reusable_card_Day('Wed'),
-                      Reusable_card_Day('Thu'),
-                      Reusable_card_Day('Fri'),
-                      Reusable_card_Day('Sat'),
-                      Reusable_card_Day('Sun'),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 40.0,
-                  margin: EdgeInsets.all(20.0),
-                  decoration: BoxDecoration(
-                      color: buttonColor2,
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(20.0)),
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        buttonColor2 = MaterialStateColor.resolveWith(
-                            (states) => Color(0xA645DE96));
-                      });
-                    },
-                    child: Center(
-                        child: Text(
-                      "Everyday",
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    )),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 20.0),
+                  padding: EdgeInsets.only(bottom: 15.0),
+                  child: Center(
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(13.0),
+                        border: Border.all(),
+                      ),
+                      child: GridView.count(
+                        crossAxisCount: 3,
+                        children: GoalIconCards,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 20.0, bottom: 20),
                   child: Text(
-                    "Notification",
+                    "Choose Duration",
                     style:
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Notifications"),
-                      CupertinoSwitch(
-                          value: switch_state,
-                          onChanged: (value) => onChanged(switch_state)),
-                    ],
-                  ),
-                ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
+                      height: 60,
+                      width: 150,
                       decoration: BoxDecoration(
-                        border: Border.all(),
+                        color: Color(0xFFB5E8F0),
+                        border: Border.all(color: Color(0xFF40C5DB), width: 2),
+                        borderRadius: BorderRadius.circular(9.0),
                       ),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           IconButton(
                             icon: Icon(CupertinoIcons.minus),
@@ -224,7 +357,12 @@ class _Add_GoalState extends State<Add_Goal> {
                       ),
                     ),
                     Container(
-                      width: 80.0,
+                      width: 150.0,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xFF40C5DB)),
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: Color(0xFFB5E8F0),
+                      ),
                       child: DropDownMenu(
                         enabled: true,
                         values: parameters,
@@ -241,31 +379,41 @@ class _Add_GoalState extends State<Add_Goal> {
                 ),
                 Center(
                   child: Padding(
-                    padding: EdgeInsets.only(top: 10.0),
+                    padding: EdgeInsets.only(top: 20.0),
                     child: Container(
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      height: 60,
                       decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(20.0),
-                        color: Color(0xA63DC5DB),
+                        border: Border.all(color: Color(0xFF40C5DB)),
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: Color(0xCFF5FA),
                       ),
                       child: TextButton(
                         onPressed: () {
                           setState(() {
                             Hobby_name = goalName.text;
                             UserHobbyList.add(
-                              GoalCard(Hobby_name),
+                              GoalCard(
+                                  GoalName: Hobby_name,
+                                  GoalIconId: imageLocation),
                             );
-                            Navigator.pop(context);
+                            _hasbeenSelected0 = false;
+                            _hasbeenSelected1 = false;
+                            _hasbeenSelected2 = false;
+                            _hasbeenSelected3 = false;
+                            _hasbeenSelected4 = false;
+                            _hasbeenSelected5 = false;
                             Hobby_name = '';
-                            buttonColor = MaterialStateColor.resolveWith(
-                                (states) => Color(0xA63DC5DB));
-                            buttonColor2 = Color(0xA63DC5DB);
                           });
+                          Navigator.pop(context);
                         },
-                        child: Text(
-                          "Confirm",
-                          style: TextStyle(color: Colors.black),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateColor.resolveWith(
+                              (states) => Color(0xFFA4E1EF)),
+                          textStyle: MaterialStateProperty.all(
+                              TextStyle(fontSize: 22.0, color: Colors.black)),
                         ),
+                        child: Text('Create Goal'),
                       ),
                     ),
                   ),
@@ -276,131 +424,3 @@ class _Add_GoalState extends State<Add_Goal> {
         ));
   }
 }
-
-class Reusable_card extends StatefulWidget {
-  Reusable_card(this.duration);
-
-  final String duration;
-
-  @override
-  State<Reusable_card> createState() => _Reusable_cardState();
-}
-
-class _Reusable_cardState extends State<Reusable_card> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(40.0),
-      ),
-      height: 50.0,
-      width: 70.0,
-      child: Center(
-        child: TextButton(
-          style: ButtonStyle(
-            backgroundColor: buttonColor,
-          ),
-          onPressed: () {
-            setState(() {
-              buttonColor =
-                  MaterialStateColor.resolveWith((states) => Color(0xA645DE96));
-              freq = widget.duration;
-            });
-          },
-          child: Text(
-            widget.duration,
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Reusable_card_Day extends StatefulWidget {
-  Reusable_card_Day(this.duration);
-
-  final String duration;
-
-  @override
-  State<Reusable_card_Day> createState() => _Reusable_card_DayState();
-}
-
-class _Reusable_card_DayState extends State<Reusable_card_Day> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(40.0),
-      ),
-      height: 50.0,
-      width: 70.0,
-      child: Center(
-        child: TextButton(
-          style: ButtonStyle(
-            backgroundColor: buttonColor,
-          ),
-          onPressed: () {
-            setState(() {
-              buttonColor =
-                  MaterialStateColor.resolveWith((states) => Color(0xA645DE96));
-              freq = widget.duration;
-            });
-          },
-          child: Text(
-            widget.duration,
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/*
-Row(
-                children: [
-                  Container(
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(CupertinoIcons.minus),
-                          onPressed: () {
-                            setState(() {
-                              amount -= 1;
-                              if (amount < 0) amount = 0;
-                            });
-                          },
-                        ),
-                        Text('$amount'),
-                        IconButton(
-                          icon: Icon(CupertinoIcons.plus),
-                          onPressed: () {
-                            setState(() {
-                              amount += 1;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 50.0,
-                    child: DropDownMenu(
-                      title: 'Gender',
-                      enabled: true,
-                      values: parameters,
-                      value: _selectedItem,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedItem = value!;
-                        });
-                      },
-                      themeFont: true,
-                    ),
-                  ),
-                ],
-              ),
- */
