@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:goalship/Rewards.dart';
 
 class RewardDetails extends StatelessWidget {
-  RewardDetails({required this.image});
+  final String token;
+  RewardDetails({required this.image, required this.token});
   final String image;
 
   MaterialColor primary = MaterialColor(
@@ -34,7 +37,7 @@ class RewardDetails extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Rewards(),
+                  builder: (context) => Rewards(token: token),
                 ),
               );
               // Add your navigation logic here

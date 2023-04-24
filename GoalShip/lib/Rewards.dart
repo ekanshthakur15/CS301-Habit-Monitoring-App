@@ -14,6 +14,8 @@ total completion goal icon is fixed
  */
 
 class Rewards extends StatefulWidget {
+  final String token;
+  const Rewards({required this.token});
   @override
   State<Rewards> createState() => _RewardsState();
 }
@@ -45,6 +47,7 @@ class _RewardsState extends State<Rewards> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => RewardDetails(
+                    token: widget.token,
                     image: RewardsList.elementAt(0),
                   ),
                 ),
@@ -65,6 +68,7 @@ class _RewardsState extends State<Rewards> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => RewardDetails(
+                    token: widget.token,
                     image: RewardsList.elementAt(1),
                   ),
                 ),
@@ -83,6 +87,7 @@ class _RewardsState extends State<Rewards> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => RewardDetails(
+                    token: widget.token,
                     image: RewardsList.elementAt(2),
                   ),
                 ),
@@ -101,6 +106,7 @@ class _RewardsState extends State<Rewards> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => RewardDetails(
+                    token: widget.token,
                     image: RewardsList.elementAt(3),
                   ),
                 ),
@@ -119,6 +125,7 @@ class _RewardsState extends State<Rewards> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => RewardDetails(
+                    token: widget.token,
                     image: RewardsList.elementAt(4),
                   ),
                 ),
@@ -137,6 +144,7 @@ class _RewardsState extends State<Rewards> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => RewardDetails(
+                    token: widget.token,
                     image: RewardsList.elementAt(5),
                   ),
                 ),
@@ -155,6 +163,7 @@ class _RewardsState extends State<Rewards> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => RewardDetails(
+                    token: widget.token,
                     image: RewardsList.elementAt(6),
                   ),
                 ),
@@ -173,6 +182,7 @@ class _RewardsState extends State<Rewards> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => RewardDetails(
+                    token: widget.token,
                     image: RewardsList.elementAt(0),
                   ),
                 ),
@@ -191,6 +201,7 @@ class _RewardsState extends State<Rewards> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => RewardDetails(
+                    token: widget.token,
                     image: RewardsList.elementAt(0),
                   ),
                 ),
@@ -225,8 +236,11 @@ class _RewardsState extends State<Rewards> {
             GestureDetector(
                 onTap: () {
                   setState(() {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                HomePage(token: widget.token)));
                   });
                 },
                 child: Icon(
@@ -238,8 +252,11 @@ class _RewardsState extends State<Rewards> {
             GestureDetector(
                 onTap: () {
                   setState(() {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Rewards()));
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                Rewards(token: widget.token)));
                   });
                 },
                 child: FaIcon(
@@ -252,7 +269,7 @@ class _RewardsState extends State<Rewards> {
               padding: const EdgeInsets.only(bottom: 25.0),
               child: GestureDetector(
                 onTap: () {
-                  showAddGoal(context);
+                  showAddGoal(context, "");
                 },
                 child: CircleAvatar(
                   backgroundColor: themeColour,
@@ -271,7 +288,8 @@ class _RewardsState extends State<Rewards> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PersonalPage()));
+                            builder: (context) =>
+                                PersonalPage(token: widget.token)));
                   });
                 },
                 child: FaIcon(
@@ -286,7 +304,8 @@ class _RewardsState extends State<Rewards> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => Settings_Page()));
+                            builder: (context) =>
+                                Settings_Page(token: widget.token)));
                   });
                 },
                 child: FaIcon(
@@ -300,7 +319,3 @@ class _RewardsState extends State<Rewards> {
     );
   }
 }
-
-/*
-
- */

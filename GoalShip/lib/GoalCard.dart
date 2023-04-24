@@ -1,76 +1,74 @@
 import 'package:flutter/material.dart';
-
+import 'GoalDetails.dart';
 import 'Add_Goal.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class GoalCard extends StatelessWidget {
-  GoalCard({required this.GoalName, required this.GoalIconId});
+  final String token;
+  GoalCard(
+      {required this.GoalName,
+      required this.GoalIconId,
+      required this.token,
+      required this.id,
+      required this.totalProgress});
 
   String GoalName;
   int GoalIconId;
-
+  int id;
+  double totalProgress;
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {},
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
       child: Container(
-        child: Column(
-          children: [
-            Image.asset(GoalIcons.elementAt(GoalIconId)),
-            Text(
-              GoalName,
-              style: TextStyle(color: Colors.black),
-            ),
-          ],
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
         ),
-      ),
-    );
-  }
-}
-
-/*
-FutureBuilder<Card_Goal>(
-  future: futureGoal,
-  builder: (context, snapshot) {
-    if (snapshot.hasData) {
-      return Text(snapshot.data!.name);
-    } else if (snapshot.hasError) {
-      return Text('${snapshot.error}');
-    }
-
-    return const CircularProgressIndicator();
-  },
-)
- */
-
-/*
-Card(
-        shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1.0),
-          borderRadius: BorderRadius.circular(35.0),
-        ),
-        elevation: 5.0,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(35.0),
+        child: ElevatedButton(
+          style: TextButton.styleFrom(
+            elevation: 4.0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(24.0))),
+            backgroundColor: Color.fromRGBO(237, 237, 237, 1),
           ),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GoalDetails(token: token, id: id),
+              ),
+            );
+          },
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
-                Icons.task_alt_rounded,
-                color: Colors.black,
-                size: 30.0,
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Image.asset(
+                      GoalIcons.elementAt(GoalIconId),
+                      height: 150.0,
+                      width: 150.0,
+                    )),
+                    Text(
+                      "${((totalProgress).toStringAsFixed(0))}%",
+                      style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                  ],
+                ),
               ),
               Text(
-                goalName,
-                style: TextStyle(
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.bold,
-                ),
+                GoalName,
+                style: TextStyle(color: Colors.black, fontSize: 18.0),
               ),
             ],
           ),
         ),
       ),
- */
+    );
+  }
+}

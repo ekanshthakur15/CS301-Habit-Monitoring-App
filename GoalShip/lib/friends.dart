@@ -1,27 +1,40 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:goalship/HomePage.dart';
 import 'package:goalship/friendsearch.dart';
+import 'package:http/http.dart' as http;
+
+import 'Friend_Detail.dart';
 
 class FriendsSection extends StatefulWidget {
+  final String token;
+  const FriendsSection({required this.token});
   @override
   State<FriendsSection> createState() => _FriendsSectionState();
 }
 
-String FriendsUrl = "http://10.0.2.2:8000/friend_detail/";
-
 class _FriendsSectionState extends State<FriendsSection> {
-  final List<String> items = [
-    'Jacob',
-    'Ekansh',
-    'Pratik',
-    'Sam',
-    'Sarah',
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-  ];
+  List items = [];
+
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    var token1 = widget.token;
+    var response = await http.get(
+        Uri.parse("http://10.0.2.2:8000/friend_list/"),
+        headers: {'Authorization': 'Token $token1'});
+    if (response.statusCode == 200) {
+      setState(() {
+        items = jsonDecode(response.body);
+      });
+    } else {
+      //catch the error
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +55,8 @@ class _FriendsSectionState extends State<FriendsSection> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => HomePage()),
+              MaterialPageRoute(
+                  builder: (context) => HomePage(token: widget.token)),
             );
           },
           icon: Icon(
@@ -61,9 +75,11 @@ class _FriendsSectionState extends State<FriendsSection> {
               ),
             ),
             onPressed: () {
+              setState(() {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => FriendsSearch()));
+              });
               // Add your onPressed action here
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => FriendsSearch()));
             },
           ),
         ],
@@ -75,12 +91,17 @@ class _FriendsSectionState extends State<FriendsSection> {
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetailScreen(name: items[index]),
-                  ),
-                );
+                setState(() {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailScreen(
+                        id: items[index]['id'],
+                        token: widget.token,
+                      ),
+                    ),
+                  );
+                });
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -108,7 +129,7 @@ class _FriendsSectionState extends State<FriendsSection> {
                         Expanded(
                           flex: 4,
                           child: ListTile(
-                            title: Text(items[index]),
+                            title: Text(items[index]['name']),
                           ),
                         ),
                         Padding(
@@ -126,94 +147,6 @@ class _FriendsSectionState extends State<FriendsSection> {
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class DetailScreen extends StatelessWidget {
-  final String name;
-
-  DetailScreen({required this.name});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.only(top: 19, right: 50, left: 100),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 95,
-                    child: Icon(Icons.person, size: 120),
-                  ),
-                  SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 50),
-                    child: Text(
-                      '$name',
-                      style: TextStyle(fontSize: 30),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 18),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              child: Card(
-                color: Color(0xFFBBE4E9),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 50),
-                      child: Text(
-                        '24',
-                        style: TextStyle(color: Colors.black, fontSize: 28),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Icon(Icons.people_alt_outlined,
-                          color: Colors.black, size: 40),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10, left: 20),
-                      child: Text(
-                        '8',
-                        style: TextStyle(color: Colors.black, fontSize: 28),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(2),
-                      child: Icon(Icons.emoji_events_outlined,
-                          color: Colors.black, size: 40),
-                    ),
-                    SizedBox(width: 10),
-                    Container(
-                      constraints:
-                          BoxConstraints.tightFor(width: 70, height: 40),
-                      padding: EdgeInsets.all(4),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

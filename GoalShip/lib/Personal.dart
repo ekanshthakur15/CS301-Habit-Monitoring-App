@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:goalship/GoalCard.dart';
+import 'package:http/http.dart' as http;
 
 import 'Add_Goal.dart';
 import 'HomePage.dart';
@@ -14,11 +18,67 @@ int limit = 2;
 double progress = 0.75;
 
 class PersonalPage extends StatefulWidget {
+  final String token;
+  const PersonalPage({required this.token});
   @override
   State<PersonalPage> createState() => _PersonalPageState();
 }
 
 class _PersonalPageState extends State<PersonalPage> {
+  List data = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getGoal();
+    print(data);
+  }
+
+  void CreateCard() {
+    setState(() {
+      UserHobbyList.clear();
+      if (data.isNotEmpty) {
+        var token2 = widget.token;
+        for (var i = 1; i < data.length; i++) {
+          var IconId = data[i]['icon'];
+          var Name = data[i]['name'];
+          var goal_id = data[i]['id'];
+          var progress = data[i]['progress_amount'];
+          setState(() {
+            UserHobbyList.add(GoalCard(
+              GoalIconId: IconId,
+              GoalName: Name,
+              id: goal_id,
+              token: token2,
+              totalProgress: progress,
+            ));
+          });
+        }
+      } else {
+        print('data is empty');
+      }
+    });
+    print(data);
+  }
+
+  Future<void> getGoal() async {
+    var token1 = widget.token;
+    var response = await http.get(
+      Uri.parse('http://10.0.2.2:8000/personal_progress/'),
+      headers: {'Authorization': 'Token $token1'},
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        data = jsonDecode(response.body);
+        if (data.isNotEmpty) {
+          CreateCard();
+        } else {
+          print('error');
+        }
+      });
+    }
+  }
+
   void showAddGoal(BuildContext ctx) {
     showModalBottomSheet(
       context: ctx,
@@ -28,7 +88,7 @@ class _PersonalPageState extends State<PersonalPage> {
             borderRadius: BorderRadius.circular(20.0),
           ),
           height: MediaQuery.of(ctx).size.height * 1.0,
-          child: Add_Goal(),
+          child: Add_Goal(token: widget.token),
         );
       },
       useSafeArea: true,
@@ -52,8 +112,11 @@ class _PersonalPageState extends State<PersonalPage> {
                     TextStyle(fontWeight: FontWeight.bold, color: TextColour)),
             GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => FriendsSection()));
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            FriendsSection(token: widget.token)));
               },
               child: FaIcon(
                 FontAwesomeIcons.user,
@@ -96,7 +159,7 @@ class _PersonalPageState extends State<PersonalPage> {
                           padding: EdgeInsets.only(left: 20.0, top: 25.0),
                           child: CircularProgressIndicator(
                             backgroundColor: Colors.white,
-                            value: progress,
+                            value: (data[0]['progress_amount']) / 100,
                             valueColor: AlwaysStoppedAnimation<Color>(
                               Colors.black,
                             ),
@@ -105,7 +168,7 @@ class _PersonalPageState extends State<PersonalPage> {
                         Padding(
                           padding: EdgeInsets.only(left: 20.0, top: 25.0),
                           child: Text(
-                            "${progress * 100}%",
+                            "${((data[0]['progress_amount']).toStringAsFixed(0))}%",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 25.0),
                           ),
@@ -133,8 +196,11 @@ class _PersonalPageState extends State<PersonalPage> {
             GestureDetector(
                 onTap: () {
                   setState(() {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                HomePage(token: widget.token)));
                   });
                 },
                 child: Icon(
@@ -146,8 +212,11 @@ class _PersonalPageState extends State<PersonalPage> {
             GestureDetector(
                 onTap: () {
                   setState(() {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Rewards()));
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                Rewards(token: widget.token)));
                   });
                 },
                 child: FaIcon(
@@ -179,7 +248,8 @@ class _PersonalPageState extends State<PersonalPage> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PersonalPage()));
+                            builder: (context) =>
+                                PersonalPage(token: widget.token)));
                   });
                 },
                 child: FaIcon(
@@ -194,7 +264,8 @@ class _PersonalPageState extends State<PersonalPage> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => Settings_Page()));
+                            builder: (context) =>
+                                Settings_Page(token: widget.token)));
                   });
                 },
                 child: FaIcon(

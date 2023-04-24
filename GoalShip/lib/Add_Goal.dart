@@ -1,12 +1,14 @@
+import 'dart:convert';
+
 import 'package:drop_down_list_menu/drop_down_list_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:goalship/HomePage.dart';
-
-import 'GoalCard.dart';
-import 'Personal.dart';
+import 'package:http/http.dart' as http;
 
 class Add_Goal extends StatefulWidget {
+  final String token;
+  Add_Goal({required this.token});
   @override
   _Add_GoalState createState() => _Add_GoalState();
 }
@@ -22,7 +24,7 @@ List<String> GoalIcons = [
 
 String Hobby_name = "";
 
-int no_of_dates = 0;
+int amount = 1;
 
 bool _hasbeenSelected0 = false;
 bool _hasbeenSelected1 = false;
@@ -31,11 +33,8 @@ bool _hasbeenSelected3 = false;
 bool _hasbeenSelected4 = false;
 bool _hasbeenSelected5 = false;
 
-String freq = '';
-
-TextEditingController goalName = TextEditingController();
-
-TextEditingController goalDuration = TextEditingController();
+final goalName = TextEditingController();
+final goalDuration = TextEditingController();
 
 bool switch_state = false;
 
@@ -56,7 +55,7 @@ class _Add_GoalState extends State<Add_Goal> {
   List<String> parameters = [
     'Select Unit',
     'Hr',
-    'min',
+    'minutes',
     'sec',
     'm',
     'km',
@@ -65,7 +64,39 @@ class _Add_GoalState extends State<Add_Goal> {
   ];
   String _selectedItem = 'Select Unit';
 
-  int amount = 0;
+  // Function to make API request
+  final apiUrl = Uri.parse('http://10.0.2.2:8000/create_goal/');
+
+  Future<void> createGoal(String name, int duration, int icon, int progress,
+      String progressType) async {
+    var token1 = widget.token;
+
+    try {
+      final response = await http.post(
+        apiUrl,
+        headers: {
+          'Authorization': 'Token $token1',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'name': name,
+          'duration': duration,
+          'image': icon,
+          'progress': progress,
+          'progress_type': progressType,
+        }),
+      );
+      print(response.body);
+
+      if (response.statusCode == 201) {
+        print('Goal created successfully');
+      } else {
+        print('Failed to create goal. Error code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error occurred while creating goal: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -230,195 +261,202 @@ class _Add_GoalState extends State<Add_Goal> {
           ),
           elevation: 0.0,
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height * 1.0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 20.0,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 20.0),
-                  child: Text(
-                    "Goal Name",
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        body: Form(
+          child: SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height * 1.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 20.0,
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.all(20.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(color: Color(0xFF40C5DB)),
-                  ),
-                  child: TextFormField(
-                    controller: goalName,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "Hobby Name",
-                      contentPadding: EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 10.0),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20.0),
+                    child: Text(
+                      "Goal Name",
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 20.0),
-                  child: Text(
-                    "Choose the Duration",
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.all(20.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(color: Color(0xFF40C5DB)),
-                  ),
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: goalDuration,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "Number of days",
-                      contentPadding: EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 10.0),
+                  Container(
+                    margin: EdgeInsets.all(20.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(color: Color(0xFF40C5DB)),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 20.0, bottom: 20),
-                  child: Text(
-                    "Choose icon",
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 15.0),
-                  child: Center(
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      width: MediaQuery.of(context).size.width * 0.85,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(13.0),
-                        border: Border.all(),
-                      ),
-                      child: GridView.count(
-                        crossAxisCount: 3,
-                        children: GoalIconCards,
+                    child: TextFormField(
+                      controller: goalName,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "Goal Name",
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 10.0),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 20.0, bottom: 20),
-                  child: Text(
-                    "Choose Duration",
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20.0),
+                    child: Text(
+                      "Choose the Duration",
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      height: 60,
-                      width: 150,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFB5E8F0),
-                        border: Border.all(color: Color(0xFF40C5DB), width: 2),
-                        borderRadius: BorderRadius.circular(9.0),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                            icon: Icon(CupertinoIcons.minus),
-                            onPressed: () {
-                              setState(() {
-                                amount -= 1;
-                                if (amount < 0) amount = 0;
-                              });
-                            },
-                          ),
-                          Text('$amount'),
-                          IconButton(
-                            icon: Icon(CupertinoIcons.plus),
-                            onPressed: () {
-                              setState(() {
-                                amount += 1;
-                              });
-                            },
-                          ),
-                        ],
+                  Container(
+                    margin: EdgeInsets.all(20.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(color: Color(0xFF40C5DB)),
+                    ),
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: goalDuration,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "Number of days",
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 10.0),
                       ),
                     ),
-                    Container(
-                      width: 150.0,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFF40C5DB)),
-                        borderRadius: BorderRadius.circular(10.0),
-                        color: Color(0xFFB5E8F0),
-                      ),
-                      child: DropDownMenu(
-                        enabled: true,
-                        values: parameters,
-                        value: _selectedItem,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedItem = value!;
-                          });
-                        },
-                        themeFont: true,
-                      ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20.0, bottom: 20),
+                    child: Text(
+                      "Choose icon",
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold),
                     ),
-                  ],
-                ),
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 20.0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.85,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFF40C5DB)),
-                        borderRadius: BorderRadius.circular(10.0),
-                        color: Color(0xCFF5FA),
-                      ),
-                      child: TextButton(
-                        onPressed: () {
-                          setState(() {
-                            Hobby_name = goalName.text;
-                            UserHobbyList.add(
-                              GoalCard(
-                                  GoalName: Hobby_name,
-                                  GoalIconId: imageLocation),
-                            );
-                            _hasbeenSelected0 = false;
-                            _hasbeenSelected1 = false;
-                            _hasbeenSelected2 = false;
-                            _hasbeenSelected3 = false;
-                            _hasbeenSelected4 = false;
-                            _hasbeenSelected5 = false;
-                            Hobby_name = '';
-                          });
-                          Navigator.pop(context);
-                        },
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateColor.resolveWith(
-                              (states) => Color(0xFFA4E1EF)),
-                          textStyle: MaterialStateProperty.all(
-                              TextStyle(fontSize: 22.0, color: Colors.black)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 15.0),
+                    child: Center(
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        width: MediaQuery.of(context).size.width * 0.85,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(13.0),
+                          border: Border.all(),
                         ),
-                        child: Text('Create Goal'),
+                        child: GridView.count(
+                          crossAxisCount: 3,
+                          children: GoalIconCards,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsets.only(left: 20.0, bottom: 20),
+                    child: Text(
+                      "Choose Amount",
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        height: 60,
+                        width: 150,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFB5E8F0),
+                          border:
+                              Border.all(color: Color(0xFF40C5DB), width: 2),
+                          borderRadius: BorderRadius.circular(9.0),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            IconButton(
+                              icon: Icon(CupertinoIcons.minus),
+                              onPressed: () {
+                                setState(() {
+                                  amount -= 1;
+                                  if (amount < 0) amount = 0;
+                                });
+                              },
+                            ),
+                            Text('$amount'),
+                            IconButton(
+                              icon: Icon(CupertinoIcons.plus),
+                              onPressed: () {
+                                setState(() {
+                                  amount += 1;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: 150.0,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xFF40C5DB)),
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Color(0xFFB5E8F0),
+                        ),
+                        child: DropDownMenu(
+                          enabled: true,
+                          values: parameters,
+                          value: _selectedItem,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedItem = value!;
+                            });
+                          },
+                          themeFont: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 20.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.85,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xFF40C5DB)),
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Color(0xCFF5FA),
+                        ),
+                        child: TextButton(
+                          onPressed: () {
+                            createGoal(
+                                goalName.text,
+                                int.parse(goalDuration.text),
+                                imageLocation,
+                                amount,
+                                _selectedItem);
+                            setState(() {
+                              Hobby_name = goalName.text;
+                              _hasbeenSelected0 = false;
+                              _hasbeenSelected1 = false;
+                              _hasbeenSelected2 = false;
+                              _hasbeenSelected3 = false;
+                              _hasbeenSelected4 = false;
+                              _hasbeenSelected5 = false;
+                              Hobby_name = '';
+                            });
+                            Navigator.pop(context);
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateColor.resolveWith(
+                                (states) => Color(0xFFA4E1EF)),
+                            textStyle: MaterialStateProperty.all(
+                                TextStyle(fontSize: 22.0, color: Colors.black)),
+                          ),
+                          child: Text(
+                            'Create',
+                            selectionColor: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ));

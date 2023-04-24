@@ -193,7 +193,8 @@ class _SignInState extends State<SignIn> {
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => HomePage()));
+                                  builder: (context) =>
+                                      HomePage(token: "token")));
                         },
                         child: Text(
                           "Sign up",

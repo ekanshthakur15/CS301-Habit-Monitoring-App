@@ -13,31 +13,16 @@ Color themeColour2 = Color(0xFFADE7EE);
 Color TextColour = Color(0xFF0000000);
 
 class Settings_Page extends StatefulWidget {
+  final String token;
+  const Settings_Page({required this.token});
   @override
   State<Settings_Page> createState() => _Settings_PageState();
 }
 
 class _Settings_PageState extends State<Settings_Page> {
-  void showAddGoal(BuildContext ctx) {
-    showModalBottomSheet(
-      context: ctx,
-      builder: (_) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          height: MediaQuery.of(ctx).size.height * 1.0,
-          child: Add_Goal(),
-        );
-      },
-      useSafeArea: true,
-      isScrollControlled: true,
-      shape: CircleBorder(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    var _username = 'Pratik';
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -50,8 +35,11 @@ class _Settings_PageState extends State<Settings_Page> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => HomePage()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  HomePage(token: widget.token)));
                     },
                     child: FaIcon(
                       Icons.arrow_back_ios,
@@ -83,7 +71,7 @@ class _Settings_PageState extends State<Settings_Page> {
                 Padding(
                   padding: EdgeInsets.only(left: 30.0),
                   child: Text(
-                    "Hello, ${userName.text}",
+                    "Hello, $_username",
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                   ),
@@ -120,7 +108,8 @@ class _Settings_PageState extends State<Settings_Page> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => FriendsSection()),
+                              builder: (context) =>
+                                  FriendsSection(token: widget.token)),
                         );
                       },
                       child: Row(
@@ -143,7 +132,8 @@ class _Settings_PageState extends State<Settings_Page> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProfileSettings(),
+                            builder: (context) =>
+                                ProfileSettings(token: widget.token),
                           ),
                         );
                       },
@@ -159,7 +149,7 @@ class _Settings_PageState extends State<Settings_Page> {
                             width: 26.0,
                           ),
                           Text(
-                            "${userName.text}",
+                            "${_username}",
                             selectionColor: Colors.black12,
                             style: TextStyle(color: Colors.black45),
                           ),
@@ -258,8 +248,11 @@ class _Settings_PageState extends State<Settings_Page> {
               GestureDetector(
                   onTap: () {
                     setState(() {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => HomePage()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  HomePage(token: widget.token)));
                     });
                   },
                   child: Icon(
@@ -274,7 +267,8 @@ class _Settings_PageState extends State<Settings_Page> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Calender_Page()));
+                              builder: (context) =>
+                                  Calender_Page(token: widget.token)));
                     });
                   },
                   child: FaIcon(
@@ -287,7 +281,7 @@ class _Settings_PageState extends State<Settings_Page> {
                 padding: const EdgeInsets.only(bottom: 25.0),
                 child: GestureDetector(
                   onTap: () {
-                    showAddGoal(context);
+                    showAddGoal(context, "");
                   },
                   child: CircleAvatar(
                     backgroundColor: themeColour,
@@ -306,7 +300,8 @@ class _Settings_PageState extends State<Settings_Page> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => PersonalPage()));
+                              builder: (context) =>
+                                  PersonalPage(token: widget.token)));
                     });
                   },
                   child: FaIcon(
@@ -321,7 +316,8 @@ class _Settings_PageState extends State<Settings_Page> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Settings_Page()));
+                              builder: (context) =>
+                                  Settings_Page(token: widget.token)));
                     });
                   },
                   child: FaIcon(

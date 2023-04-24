@@ -46,6 +46,8 @@ dependencies:
   inline_calendar:
   drop_down_list_menu:
   http:
+  flutter_heatmap_calendar:
+  flutter_secure_storage:
 
 dev_dependencies:
   flutter_test:

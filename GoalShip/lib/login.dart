@@ -1,188 +1,74 @@
-/*
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:goalship/HomePage.dart';
 import 'package:http/http.dart' as http;
-
-import 'signin.dart';
-
-TextEditingController userName = TextEditingController();
-TextEditingController password = TextEditingController();
-
-String userUrl = "http://10.0.2.2:8000/users/login/";
-
-class Login extends StatefulWidget {
-  @override
-  State<Login> createState() => _LoginState();
-}
-
-class _LoginState extends State<Login> {
-  void UserLogin(String username, String password) async {
-    try {
-      http.Response response = await http.post(
-        Uri.parse(userUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(
-          <String, String>{
-            'username': username,
-            'password': password,
-          },
-        ),
-      );
-      if (response.statusCode == 202) {
-        setState(() {
-          Name = username;
-        });
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent.withOpacity(0.2),
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: 15.0,
-            ),
-            Text(
-              'Enter Details',
-              style: TextStyle(color: Colors.black),
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Icon(
-                Icons.close,
-                color: Colors.black,
-              ),
-            ),
-          ],
-        ),
-        elevation: 0.0,
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 25.0, top: 15.0),
-                child: Text(
-                  "Name",
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.all(20.0),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0),
-                    border: Border.all()),
-                child: TextFormField(
-                  decoration: InputDecoration(),
-                  controller: userName,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 2.0),
-                child: Text(
-                  "Password",
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.all(20.0),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0),
-                    border: Border.all()),
-                child: TextFormField(
-                  controller: password,
-                ),
-              ),
-              Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.2,
-                  height: 45.0,
-                  decoration: BoxDecoration(
-                    color: Colors.greenAccent,
-                    border: Border.all(),
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      UserLogin(userName.text, password.text);
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => HomePage()));
-                    },
-                    child: Text(
-                      "Log In",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "First time here?",
-                    style: TextStyle(
-                      fontSize: 15.0,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => SignIn()));
-                    },
-                    child: Text(
-                      "Sign In",
-                      style: TextStyle(
-                        fontSize: 15.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-*/
-
-import 'package:flutter/material.dart';
-import 'package:goalship/HomePage.dart';
 
 import 'signin.dart';
 
 Color fillcol = Color(0xF3F0F0);
 bool _obscureText = true;
 
-TextEditingController userName = TextEditingController();
-TextEditingController password = TextEditingController();
-
 class Login extends StatefulWidget {
   @override
   State<Login> createState() => _LoginState();
 }
 
+AndroidOptions _getAndroidOptions() => const AndroidOptions(
+      encryptedSharedPreferences: true,
+    );
+
 class _LoginState extends State<Login> {
+  final _storage = FlutterSecureStorage(aOptions: _getAndroidOptions());
+  final _formkey = GlobalKey<FormState>();
+  final TextEditingController _username = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+
+  @override
+  void dispose() {
+    _username.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  String _errorMessage = '';
+
+  void _submitForm() async {
+    try {
+      final token = await _fetchToken(_username.text, _password.text);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(token: token)),
+      );
+    } catch (error) {
+      setState(() {
+        _errorMessage = 'Failed to login. Please try again.';
+      });
+    }
+  }
+
+  Future<String> _fetchToken(String username, String password) async {
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:8000/users/login/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'username': username,
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      final token = jsonResponse['token'];
+      return token;
+    } else {
+      throw Exception('Failed to retrieve token');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -240,7 +126,7 @@ class _LoginState extends State<Login> {
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 ),
-                controller: userName,
+                controller: _username,
               ),
             ),
             Padding(
@@ -279,7 +165,7 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
-                controller: password,
+                controller: _password,
                 obscureText: _obscureText,
               ),
             ),
@@ -303,11 +189,9 @@ class _LoginState extends State<Login> {
                   border: Border.all(color: Color(0xFF40C5DB), width: 2),
                   borderRadius: BorderRadius.circular(9.0),
                 ),
+                //LoginButton
                 child: TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
-                  },
+                  onPressed: _submitForm,
                   child: Text(
                     "Log In",
                     style: TextStyle(

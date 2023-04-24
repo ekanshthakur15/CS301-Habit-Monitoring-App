@@ -8,6 +8,8 @@ import 'Personal.dart';
 import 'Settings.dart';
 
 class Calender_Page extends StatefulWidget {
+  final String token;
+  const Calender_Page({required this.token});
   @override
   State<Calender_Page> createState() => _CalenderState();
 }
@@ -25,7 +27,9 @@ class _CalenderState extends State<Calender_Page> {
             borderRadius: BorderRadius.circular(20.0),
           ),
           height: MediaQuery.of(ctx).size.height * 1.0,
-          child: Add_Goal(),
+          child: Add_Goal(
+            token: widget.token,
+          ),
         );
       },
       useSafeArea: true,
@@ -107,8 +111,11 @@ class _CalenderState extends State<Calender_Page> {
               GestureDetector(
                   onTap: () {
                     setState(() {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => HomePage()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  HomePage(token: widget.token)));
                     });
                   },
                   child: Icon(
@@ -123,7 +130,8 @@ class _CalenderState extends State<Calender_Page> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Calender_Page()));
+                              builder: (context) =>
+                                  Calender_Page(token: widget.token)));
                     });
                   },
                   child: FaIcon(
@@ -155,7 +163,8 @@ class _CalenderState extends State<Calender_Page> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => PersonalPage()));
+                              builder: (context) =>
+                                  PersonalPage(token: widget.token)));
                     });
                   },
                   child: FaIcon(
@@ -170,7 +179,8 @@ class _CalenderState extends State<Calender_Page> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Settings_Page()));
+                              builder: (context) =>
+                                  Settings_Page(token: widget.token)));
                     });
                   },
                   child: FaIcon(

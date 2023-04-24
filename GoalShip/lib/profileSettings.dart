@@ -7,6 +7,8 @@ import 'Settings.dart';
 import 'login.dart';
 
 class ProfileSettings extends StatefulWidget {
+  final String token;
+  const ProfileSettings({required this.token});
   @override
   State<ProfileSettings> createState() => _ProfileSettingsState();
 }
@@ -31,7 +33,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         leading: TextButton(
           onPressed: () {
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => HomePage()));
+                context,
+                MaterialPageRoute(
+                    builder: (context) => HomePage(token: widget.token)));
           },
           child: FaIcon(
             Icons.arrow_back_ios,
@@ -79,7 +83,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         Padding(
                           padding: EdgeInsets.only(left: 18.0, top: 59.0),
                           child: Text(
-                            "${userName.text}",
+                            "User",
                             style: TextStyle(
                               fontSize: 25.0,
                               fontWeight: FontWeight.bold,
