@@ -56,7 +56,6 @@ class DailyProgressSerializer(serializers.ModelSerializer):
 
 class GoalSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only = True)
-    progress_type = serializers.ChoiceField(choices= Goal.progress_choice)
     class Meta:
         model = Goal
         fields = '__all__'

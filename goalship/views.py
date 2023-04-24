@@ -23,7 +23,6 @@ from django.db.models import Q
 #Working View to create a new goal and save it
 
 class CreateGoal(APIView):
-
     def post(self, request, format = None):
         serializer = GoalSerializer(data= request.data, partial = True)
         if serializer.is_valid():
@@ -116,6 +115,7 @@ class FriendListView(APIView):
             user_rewards = UserReward.objects.filter(user = user, redeemed = True)
             rewards_count = user_rewards.count()
             friend_data = {
+                "id": user.profile.id,
                 'name' : user.profile.name,
                 'profile_picture' : friend.image,
                 'reward_count': rewards_count,
@@ -138,17 +138,18 @@ class UserDetail(APIView):
         friend = self.get_object(friend_id)
         friend_profile = Profile.objects.get(user = friend)
         friend_rewards = UserReward.objects.filter(user = friend)
-
+        data = []
         reward_data = []
         for reward in friend_rewards:
             reward_data.append({
                 'name' : reward.reward.name
             })
-        data = {
+        data_set = {
             'name' : friend_profile.name,
             'profile_picture' : friend_profile.image,
             'rewards' : reward_data
         }
+        data.append(data_set)
 
         return Response(data)
         
@@ -226,12 +227,12 @@ class PersonalProgressListView(APIView):
            daily_progress = DailyProgress.objects.filter(
                goal=goal, progress_date=today).first()
            daily_amount = daily_progress.progress_amount
-           progress_percentage = (daily_amount/goal.progress)*100
+           progress_percent = (daily_amount/goal.progress)*100
            data = {
                'id':goal.id,
                'name': goal.name,
                'icon': goal.image,
-               'progress_amount': progress_percentage,
+               'progress_amount': progress_percent,
            }
            all_goal_data.append(data)
         return Response(all_goal_data)
@@ -272,9 +273,11 @@ class GoalDetailView(APIView):
         detail = {
             "name": goal.name,
             "progress_percentage": progress_percentage,
+            "progress": daily_progress.progress_amount,
+            "progress_type":goal.progress_type,
             "completed_dates": dates,
             "duration":goal.duration,
-            "completed": goal.frequency
+            "completed": goal.frequency,
         }
         return Response(detail)
         
@@ -347,7 +350,7 @@ class HomePageView(APIView):
             for goal in goals:
                 progress = DailyProgress.objects.filter(goal = goal, progress_date = date).first()
                 target = goal.progress
-                goal_progress = (progress.progress_amount/target)*100
+                goal_progress = (progress.progress_amount/target)
                 data = {
                     "goal_name": goal.name,
                     "goal_progress" : goal_progress

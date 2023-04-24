@@ -29,19 +29,8 @@ class Goal(models.Model):
     image = models.IntegerField(default= 0)
     start_date = models.DateField(default= date.today, blank= True)
     duration = models.IntegerField(default= 7)
-    progress_choice = (
-        ('Seconds', 'seconds'),
-        ('minutes', 'Minutes'),
-        ('Hours','hours'),
-        ('Meters', 'meters'),
-        ('kilometers', 'Kilometer'),
-        ('steps', 'Steps'),
-        ('times', 'Times'),
-        ('litres', 'Litre'),
-        ('ml', 'Ml'),
-    )
-    progress = models.IntegerField(default= 0)
-    progress_type = models.CharField(max_length=10, choices= progress_choice, default='times')
+    progress = models.IntegerField(default= 1)
+    progress_type = models.CharField(max_length=10,default='times')
     frequency = models.IntegerField( default=0)
 
     def __str__(self) -> str:
@@ -53,7 +42,7 @@ class DailyProgress(models.Model):
     progress_date = models.DateField()
     progress_amount = models.IntegerField()
 
-    def __str__(self) -> str:
+    def __str__(self) -> str: 
         return str(self.progress_date)
 
 # Model to store Rewards Detail
@@ -74,3 +63,4 @@ class UserReward(models.Model):
     goal = models.ForeignKey(Goal, on_delete= models.CASCADE, blank=True, null= True)
     reward = models.ForeignKey(Reward, related_name='reward_of',on_delete= models.CASCADE)
     redeemed = models.BooleanField(default=False)
+
