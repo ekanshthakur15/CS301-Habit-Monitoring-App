@@ -36,8 +36,11 @@ Flutter: Frontend development for user interfaces and interactions.
 
 # Images
 
-![Settings](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/53e5f7df-b83d-42a7-8fb0-d35bea86f10f)
-![Progress](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/ffce0de7-2bf1-4964-8130-6d1eb80a1d61)
-![Milestone 2](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/25e6095e-eec1-4670-ae22-fc300f3c2439)
+![Login](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/4f7b8029-88c3-41f5-bf58-651d95f51253)
 ![HomePge](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/5434ff65-d0fc-498a-b6fc-90a69f582a02)
 ![Create New Page](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/bf89e1be-c257-496c-b299-a16dc6ab7555)
+![Progress](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/ffce0de7-2bf1-4964-8130-6d1eb80a1d61)
+![Goal Detail](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/899bce8e-e6be-4bb3-acd7-1223c5a1886b)
+![Milestone 2](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/25e6095e-eec1-4670-ae22-fc300f3c2439)
+![Social](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/9658be12-f047-4699-ae36-6e6522ca3281)
+![Settings](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/53e5f7df-b83d-42a7-8fb0-d35bea86f10f)
