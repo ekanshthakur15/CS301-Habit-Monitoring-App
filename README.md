@@ -4,11 +4,16 @@ The Goal Sharing App is a platform designed to help users set and achieve their 
 
 # Key Features
 
-Goal Tracking: Users can create and track their personal goals. Each goal includes a title, description, target amount, and progress amount.
-Daily Progress: Users can update their progress on a daily basis, helping them monitor their journey toward their goals over time.
-Sharing Goals: Users can share their goals with friends, allowing them to provide support, encouragement, and motivation.
-Reward System: The app includes a reward system that grants users rewards when they achieve their goals. These rewards can serve as incentives to keep users motivated.
-Friendship Network: Users can connect with friends within the app, view their friends' goals, and provide support and feedback.
+## Goal Tracking: 
+Users can create and track their personal goals. Each goal includes a title, description, target amount, and progress amount.
+## Daily Progress: 
+Users can update their progress on a daily basis, helping them monitor their journey toward their goals over time.
+## Sharing Goals: 
+Users can share their goals with friends, allowing them to provide support, encouragement, and motivation.
+## Reward System: 
+The app includes a reward system that grants users rewards when they achieve their goals. These rewards can serve as incentives to keep users motivated.
+## Friendship Network:
+Users can connect with friends within the app, view their friends' goals, and provide support and feedback.
 
 # How It Works
 
@@ -35,6 +40,9 @@ dbSQL: Database management for storing user data and goal information.
 Flutter: Frontend development for user interfaces and interactions.
 
 # Images
+
+
+
 
 ![Login](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/4f7b8029-88c3-41f5-bf58-651d95f51253)
 ![HomePge](https://github.com/ekanshthakur15/CS301-Goal-Sharing-App/assets/99100158/5434ff65-d0fc-498a-b6fc-90a69f582a02)
